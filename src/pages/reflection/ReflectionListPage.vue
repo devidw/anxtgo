@@ -45,7 +45,7 @@ const router = useRouter()
 const db = new Localbase('db')
 const columns = [
   {
-    label: 'Sort by date',
+    label: 'Date',
     name: 'date',
     field: (row) => row.date,
     format: (value) => date.formatDate(value, 'D MMM YYYY'),
@@ -67,12 +67,13 @@ const columns = [
     label: 'Implements abstraction?',
     name: 'implementsAbstraction',
     field: (row) => row.implementsAbstraction,
-    format: (value) => (value ? 'Yes' : 'No'),
+    format: (value) => (value === true ? 'Yes' : value === false ? 'No' : '?'),
   },
 ]
 const rows = ref([])
 const options = ref(['All', 'Already abstracted', 'Not yet abstracted'])
-const showAbstracted = ref('Not yet abstracted')
+// const showAbstracted = ref('Not yet abstracted')
+const showAbstracted = ref('All')
 
 db.collection('reflections')
   .get()

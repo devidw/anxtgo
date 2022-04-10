@@ -149,8 +149,8 @@ module.exports = configure(function (ctx) {
       // chainWebpackCustomSW (/* chain */) {},
 
       manifest: {
-        name: 'Personality Development',
-        short_name: 'Personality Development',
+        name: 'Experiential learning',
+        short_name: 'ExL',
         description: '',
         display: 'standalone',
         orientation: 'portrait',

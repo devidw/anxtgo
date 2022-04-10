@@ -1,0 +1,121 @@
+<template>
+  <q-page padding>
+    <q-timeline :layout="layout">
+      <q-timeline-entry heading>
+        {{ rating > 0 ? `+${rating}` : rating }}
+      </q-timeline-entry>
+      <q-timeline-entry
+        v-for="station in stations"
+        :key="station.id"
+        :side="
+          isReflection(station) ? (isPos(station) ? 'left' : 'right') : 'left'
+        "
+        :title="station.date"
+        :subtitle="isReflection(station) ? 'Reflection' : 'Abstraction'"
+        :icon="
+          isReflection(station)
+            ? isPos(station) === true
+              ? 'thumb_up'
+              : isPos(station) === false
+              ? 'thumb_down'
+              : 'thumbs_up_down'
+            : 'psychology'
+        "
+        :color="
+          isReflection(station)
+            ? isPos(station) === true
+              ? 'positive'
+              : isPos(station) === false
+              ? 'negative'
+              : 'orange'
+            : 'info'
+        "
+      >
+        <div class="q-mb-md c-desc">
+          {{ station.description }}
+        </div>
+        <div class="q-mb-xl">
+          <q-btn
+            outline
+            rounded
+            label="Edit"
+            @click="goToEdit(station)"
+            icon="edit_note"
+          />
+        </div>
+      </q-timeline-entry>
+    </q-timeline>
+  </q-page>
+</template>
+
+<script setup>
+import { ref, computed } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import { useQuasar, date } from 'quasar'
+import Localbase from 'localbase'
+import { useAbstractionRating } from './rating'
+
+const router = useRouter()
+const route = useRoute()
+const $q = useQuasar()
+const db = new Localbase('db')
+const id = Number(route.params.id)
+const stations = ref([])
+const layout = computed(() => {
+  return $q.screen.lt.sm ? 'dense' : $q.screen.lt.md ? 'comfortable' : 'loose'
+})
+const rating = ref(0)
+useAbstractionRating(id).then((theRating) => (rating.value = theRating))
+
+/**
+ * Get all reflection, which are linked to the current abstraction
+ */
+db.collection('reflections')
+  .get()
+  .then((docs) => {
+    const linked = docs.filter((doc) => doc.abstractionId === id)
+    stations.value = linked
+  })
+  /**
+   * Also add the current abstraction itself
+   */
+  .then(() => {
+    db.collection('abstractions')
+      .doc({ id: id })
+      .get()
+      .then((doc) => {
+        stations.value.push(doc)
+      })
+      /**
+       * Sort all reflections and abstractions by date
+       */
+      .then(() => {
+        stations.value.sort((a, b) => {
+          return new Date(b.date) - new Date(a.date)
+        })
+      })
+  })
+
+const isReflection = (doc) => doc.abstractionId === id
+
+/**
+ * Is the passed reflection a positive one, which implements its abstraction?
+ */
+const isPos = (doc) => doc.implementsAbstraction
+
+/**
+ * Go to the edit page of the passed station, either a reflection or abstraction
+ */
+const goToEdit = (station) => {
+  if (isReflection(station)) {
+    router.push(`/reflections/${station.id}/edit`)
+  } else {
+    router.push(`/abstractions/${station.id}/edit`)
+  }
+}
+</script>
+
+<style lang="sass">
+.c-desc
+  white-space: pre-wrap
+</style>

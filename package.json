@@ -1,9 +1,9 @@
 {
-  "name": "pd",
+  "name": "exl",
   "version": "0.0.1",
   "description": "A Quasar Project",
-  "productName": "Personality Development",
-  "author": "David Wolf <68775926+devidw@users.noreply.github.com>",
+  "productName": "Experiential learning",
+  "author": "David Wolf <david@wolf.gdn>",
   "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue ./",

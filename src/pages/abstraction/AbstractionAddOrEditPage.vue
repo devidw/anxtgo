@@ -26,6 +26,7 @@
         v-model="description"
         outlined
         type="textarea"
+        autogrow
         label="Abstraction"
         :rules="[(val) => !!val || 'Field is required']"
       />
@@ -80,12 +81,12 @@ if (route.path.endsWith('add')) {
 
 function onSubmit() {
   if (action.value === 'add') {
-    addAbstraction().then(() => {
-      router.push('/abstractions')
+    addAbstraction().then((doc) => {
+      router.push(`/abstractions/${doc.data.data.id}`)
     })
   } else if (action.value === 'edit') {
     updateAbstraction(getId()).then(() => {
-      router.push('/abstractions')
+      router.push(`/abstractions/${getId()}`)
     })
   }
 }

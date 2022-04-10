@@ -1,12 +1,19 @@
 <template>
   <q-page padding>
-    <q-form class="q-gutter-md" @submit="onSubmit">
-      <q-stepper v-model="step" vertical color="primary" animated ref="stepper">
+    <q-form class="q-gutter-md" @submit.prevent.stop="onSubmit">
+      <q-stepper
+        v-model="step"
+        vertical
+        header-nav
+        color="primary"
+        animated
+        ref="stepper"
+      >
         <q-step
           :name="1"
           title="Reflect on the experience"
           icon="visibility"
-          :done="step > 1"
+          :done="done[1]"
         >
           <q-input outlined v-model="theDate" mask="date" :rules="['date']">
             <template v-slot:append>
@@ -30,6 +37,7 @@
           <q-input
             v-model="description"
             outlined
+            autogrow
             type="textarea"
             label="Reflection"
             :rules="[(val) => !!val || 'Field is required']"
@@ -40,13 +48,14 @@
           :name="2"
           title="Abstract on the reflection"
           icon="psychology"
-          :done="step > 2"
+          :done="done[2]"
         >
           <q-input
             v-if="!abstractionId"
             v-model="abstractionDescription"
-            outlined
             @keyup="filterAbstractions"
+            outlined
+            autogrow
             type="textarea"
             label="Abstraction"
             class="q-mb-lg"
@@ -83,17 +92,22 @@
             outline
             rounded
             color="primary"
-            label="Uncheck"
+            label="Unlink"
           />
         </q-step>
 
-        <q-step :name="3" title="Implements abstraction?" icon="thumbs_up_down">
+        <q-step
+          :name="3"
+          title="Implements abstraction?"
+          icon="thumbs_up_down"
+          :done="done[3]"
+        >
           <div class="q-gutter-sm">
             <q-toggle
               toggle-indeterminate
-              indeterminate-icon="question_mark"
-              checked-icon="check"
-              unchecked-icon="clear"
+              indeterminate-icon="thumbs_up_down"
+              checked-icon="thumb_up"
+              unchecked-icon="thumb_down"
               v-model="implementsAbstraction"
               label="Implements abstraction?"
             />
@@ -115,7 +129,12 @@
               v-if="step < 3"
               outline
               rounded
-              @click="$refs.stepper.next()"
+              @click="
+                () => {
+                  $refs.stepper.next()
+                  setDone(step)
+                }
+              "
               color="primary"
               label="Continue"
               icon="arrow_forward"
@@ -159,7 +178,6 @@ const router = useRouter()
 const route = useRoute()
 const db = new Localbase('db')
 let action = ref('')
-const step = ref(1)
 const formattedString = date.formatDate(Date.now(), 'YYYY/MM/DD')
 const theDate = ref(formattedString)
 const description = ref('')
@@ -168,6 +186,12 @@ const abstractionId = ref(null)
 const abstractionDescription = ref('')
 const abstractions = ref([])
 const filteredAbstractions = ref([])
+const done = ref({
+  1: theDate.value.length > 0 && description.value.length > 0,
+  2: abstractionId.value !== null || abstractionDescription.value.length > 0,
+  3: implementsAbstraction.value !== null,
+})
+const step = ref(1)
 
 const getAbstractions = () => {
   return db
@@ -195,11 +219,11 @@ function onSubmit() {
   maybeAddAbstraction()
   if (action.value === 'add') {
     addReflection().then(() => {
-      router.push('/reflections')
+      redirectAfterSave()
     })
   } else if (action.value === 'edit') {
     updateReflection(getId()).then(() => {
-      router.push('/reflections')
+      redirectAfterSave()
     })
   }
 }
@@ -290,6 +314,14 @@ function maybeAddAbstraction() {
       .then(() => {
         abstractionDescription.value = ''
       })
+  }
+}
+
+function redirectAfterSave() {
+  if (abstractionId.value) {
+    router.push(`/abstractions/${abstractionId.value}`)
+  } else {
+    router.push('/reflections')
   }
 }
 </script>
