@@ -50,6 +50,12 @@ const linksList = [
     icon: 'psychology',
     link: '/abstractions',
   },
+  {
+    title: 'Export & import',
+    caption: 'Export and import your data',
+    icon: 'sync',
+    link: '/export-import',
+  },
 ]
 
 export default defineComponent({
