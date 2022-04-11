@@ -9,6 +9,9 @@
       :filter="showAbstracted"
       :filter-method="filterBy"
       row-key="name"
+      :binary-state-sort="true"
+      :pagination="pagination"
+      :rows-per-page-options="rowsPerPageOptions"
       @row-click="onRowClick"
     >
       <template v-slot:top>
@@ -22,12 +25,11 @@
             to="/reflections/add"
           />
           <q-select
+            v-if="rows.length > 0"
             rounded
             outlined
             v-model="showAbstracted"
             :options="options"
-            label="Filter"
-            style="min-width: 200px"
           />
         </div>
       </template>
@@ -39,16 +41,20 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { date } from 'quasar'
-import Localbase from 'localbase'
+import { db } from '../../db'
 
-const router = useRouter()
-const db = new Localbase('db')
+const pagination = ref({
+  sortBy: 'date',
+  descending: true,
+  rowsPerPage: 0, // 0 means all
+})
+const rowsPerPageOptions = [5, 10, 20, 50, 100]
 const columns = [
   {
     label: 'Date',
     name: 'date',
     field: (row) => row.date,
-    format: (value) => date.formatDate(value, 'D MMM YYYY'),
+    format: (value) => date.formatDate(value, 'D MMM YYYY HH:mm'),
     sortable: true,
   },
   {
@@ -75,16 +81,9 @@ const options = ref(['All', 'Already abstracted', 'Not yet abstracted'])
 // const showAbstracted = ref('Not yet abstracted')
 const showAbstracted = ref('All')
 
-db.collection('reflections')
-  .get()
-  .then((reflections) => (rows.value = reflections))
-
-/**
- * Go to detail page
- */
-function onRowClick(evt, row) {
-  router.push({ path: `/reflections/${row.id}/edit` })
-}
+db.reflections.toArray().then((reflections) => {
+  rows.value = reflections
+})
 
 /**
  * Showing
@@ -94,15 +93,21 @@ function onRowClick(evt, row) {
  */
 function filterBy(rows) {
   return rows.filter((row) => {
-    if (showAbstracted.value === 'Already abstracted') {
-      return row.abstractionId
-    } else if (showAbstracted.value === 'Not yet abstracted') {
-      return !row.abstractionId
-    } else {
-      return true
+    switch (showAbstracted.value) {
+      case 'All':
+        return true
+      case 'Already abstracted':
+        return row.abstractionId !== null
+      case 'Not yet abstracted':
+        return row.abstractionId === null
+      default:
+        return true
     }
   })
 }
+
+const router = useRouter()
+const onRowClick = (evt, row) => router.push(`/reflections/${row.id}/edit`)
 </script>
 
 <style lang="sass">

@@ -8,6 +8,9 @@
       :columns="columns"
       row-key="name"
       @row-click="onRowClick"
+      :binary-state-sort="true"
+      :pagination="pagination"
+      :rows-per-page-options="rowsPerPageOptions"
     >
       <template v-slot:top>
         <div class="q-gutter-sm">
@@ -29,11 +32,15 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { date } from 'quasar'
-import Localbase from 'localbase'
 import { useAbstractionRating } from './rating'
+import { db } from '../../db'
 
-const router = useRouter()
-const db = new Localbase('db')
+const pagination = ref({
+  sortBy: 'rating',
+  descending: false,
+  rowsPerPage: 0, // 0 means all
+})
+const rowsPerPageOptions = [5, 10, 20, 50, 100]
 const columns = [
   {
     label: 'Date',
@@ -59,9 +66,11 @@ const columns = [
 ]
 const rows = ref([])
 
-db.collection('abstractions')
-  .get()
-  .then((abstractions) => (rows.value = abstractions))
+db.abstractions
+  .toArray()
+  .then((abstractions) => {
+    rows.value = abstractions
+  })
   /**
    * Bulk calculate, await and apply ratings to the table rows
    */
@@ -73,9 +82,8 @@ db.collection('abstractions')
     })
   })
 
-function onRowClick(evt, row) {
-  router.push({ path: `/abstractions/${row.id}` })
-}
+const router = useRouter()
+const onRowClick = (evt, row) => router.push(`/abstractions/${row.id}`)
 </script>
 
 <style lang="sass">

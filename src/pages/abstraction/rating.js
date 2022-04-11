@@ -1,4 +1,4 @@
-import Localbase from 'localbase'
+import { db } from '../../db'
 
 /**
  * Returns the rating of an abstraction.
@@ -7,14 +7,8 @@ import Localbase from 'localbase'
  * @returns {Promise<number>} The rating of the abstraction.
  */
 export function useAbstractionRating(abstractionId) {
-  const db = new Localbase('db')
-  return db
-    .collection('reflections')
-    .get()
+  return db.reflections.where({ abstractionId: abstractionId }).toArray()
     .then((reflections) => {
-      reflections = reflections.filter(
-        (ref) => ref.abstractionId === abstractionId
-      )
       return reflections.reduce((rating, reflection) => {
         return (
           rating +

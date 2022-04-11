@@ -51,14 +51,13 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { useQuasar, date } from 'quasar'
-import Localbase from 'localbase'
+import { useQuasar } from 'quasar'
 import { useAbstractionRating } from './rating'
+import { db } from '../../db'
 
 const router = useRouter()
 const route = useRoute()
 const $q = useQuasar()
-const db = new Localbase('db')
 const id = Number(route.params.id)
 const stations = ref([])
 const layout = computed(() => {
@@ -70,8 +69,9 @@ useAbstractionRating(id).then((theRating) => (rating.value = theRating))
 /**
  * Get all reflection, which are linked to the current abstraction
  */
-db.collection('reflections')
-  .get()
+db.reflections
+  .where({ abstractionId: id })
+  .toArray()
   .then((docs) => {
     const linked = docs.filter((doc) => doc.abstractionId === id)
     stations.value = linked
@@ -80,9 +80,8 @@ db.collection('reflections')
    * Also add the current abstraction itself
    */
   .then(() => {
-    db.collection('abstractions')
-      .doc({ id: id })
-      .get()
+    db.abstractions
+      .get(id)
       .then((doc) => {
         stations.value.push(doc)
       })
@@ -97,10 +96,6 @@ db.collection('reflections')
   })
 
 const isReflection = (doc) => doc.abstractionId === id
-
-/**
- * Is the passed reflection a positive one, which implements its abstraction?
- */
 const isPos = (doc) => doc.implementsAbstraction
 
 /**
@@ -109,9 +104,9 @@ const isPos = (doc) => doc.implementsAbstraction
 const goToEdit = (station) => {
   if (isReflection(station)) {
     router.push(`/reflections/${station.id}/edit`)
-  } else {
-    router.push(`/abstractions/${station.id}/edit`)
+    return
   }
+  router.push(`/abstractions/${station.id}/edit`)
 }
 </script>
 

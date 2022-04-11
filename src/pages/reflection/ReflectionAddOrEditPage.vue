@@ -15,16 +15,15 @@
           icon="visibility"
           :done="done[1]"
         >
-          <q-input outlined v-model="theDate" mask="date" :rules="['date']">
-            <template v-slot:append>
+          <q-input outlined v-model="reflection.date" class="q-mb-md">
+            <template v-slot:prepend>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy
-                  ref="qDateProxy"
                   cover
                   transition-show="scale"
                   transition-hide="scale"
                 >
-                  <q-date v-model="theDate">
+                  <q-date v-model="reflection.date" mask="YYYY-MM-DD HH:mm">
                     <div class="row items-center justify-end">
                       <q-btn v-close-popup label="Close" color="primary" flat />
                     </div>
@@ -32,10 +31,30 @@
                 </q-popup-proxy>
               </q-icon>
             </template>
+
+            <template v-slot:append>
+              <q-icon name="access_time" class="cursor-pointer">
+                <q-popup-proxy
+                  cover
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
+                  <q-time
+                    v-model="reflection.date"
+                    mask="YYYY-MM-DD HH:mm"
+                    format24h
+                  >
+                    <div class="row items-center justify-end">
+                      <q-btn v-close-popup label="Close" color="primary" flat />
+                    </div>
+                  </q-time>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
           </q-input>
 
           <q-input
-            v-model="description"
+            v-model="reflection.description"
             outlined
             autogrow
             type="textarea"
@@ -51,8 +70,8 @@
           :done="done[2]"
         >
           <q-input
-            v-if="!abstractionId"
-            v-model="abstractionDescription"
+            v-if="!reflection.abstractionId"
+            v-model="abstraction.description"
             @keyup="filterAbstractions"
             outlined
             autogrow
@@ -69,7 +88,7 @@
             >
               <q-item-section avatar>
                 <q-radio
-                  v-model="abstractionId"
+                  v-model="reflection.abstractionId"
                   :val="abstraction.id"
                   checked-icon="task_alt"
                 />
@@ -87,7 +106,7 @@
             </q-item>
           </q-list>
           <q-btn
-            v-if="abstractionId"
+            v-if="reflection.abstractionId"
             @click="unlinkAbstraction"
             outline
             rounded
@@ -108,7 +127,7 @@
               indeterminate-icon="thumbs_up_down"
               checked-icon="thumb_up"
               unchecked-icon="thumb_down"
-              v-model="implementsAbstraction"
+              v-model="reflection.implementsAbstraction"
               label="Implements abstraction?"
             />
           </div>
@@ -129,12 +148,7 @@
               v-if="step < 3"
               outline
               rounded
-              @click="
-                () => {
-                  $refs.stepper.next()
-                  setDone(step)
-                }
-              "
+              @click="$refs.stepper.next()"
               color="primary"
               label="Continue"
               icon="arrow_forward"
@@ -168,160 +182,154 @@
   </q-page>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { date } from 'quasar'
-import Localbase from 'localbase'
+import { db } from '../../db'
 
 const router = useRouter()
 const route = useRoute()
-const db = new Localbase('db')
-let action = ref('')
-const formattedString = date.formatDate(Date.now(), 'YYYY/MM/DD')
-const theDate = ref(formattedString)
-const description = ref('')
-const implementsAbstraction = ref(null)
-const abstractionId = ref(null)
-const abstractionDescription = ref('')
-const abstractions = ref([])
+const action = ref('')
+const reflectionId = Number(route.params.id)
+const reflection = ref({
+  date: date.formatDate(Date.now(), 'YYYY-MM-DD HH:mm'),
+  description: '',
+  abstractionId: null,
+  implementsAbstraction: null,
+})
+const abstraction = ref({
+  date: date.formatDate(Date.now(), 'YYYY-MM-DD HH:mm'),
+  description: '',
+})
 const filteredAbstractions = ref([])
 const done = ref({
-  1: theDate.value.length > 0 && description.value.length > 0,
-  2: abstractionId.value !== null || abstractionDescription.value.length > 0,
-  3: implementsAbstraction.value !== null,
+  1:
+    reflection.value.date.length > 0 && reflection.value.description.length > 0,
+  2:
+    reflection.value.abstractionId !== null ||
+    abstraction.value.description.length > 0,
+  3: reflection.value.implementsAbstraction !== null,
 })
 const step = ref(1)
 
-const getAbstractions = () => {
-  return db
-    .collection('abstractions')
-    .get()
-    .then((docs) => {
-      abstractions.value = docs
-    })
-}
-
-getAbstractions()
-
-const getId = () => {
-  return Number(route.params.id)
-}
-
 if (route.path.endsWith('add')) {
-  action = ref('add')
+  action.value = 'add'
 } else if (route.path.endsWith('edit')) {
-  action = ref('edit')
-  populateReflection(getId())
+  action.value = 'edit'
+  readReflection()
+} else {
+  router.push('/reflections')
 }
 
+/**
+ * Process submission to handle maybe add a new abstraction and after that create or update the reflection
+ */
 function onSubmit() {
-  maybeAddAbstraction()
-  if (action.value === 'add') {
-    addReflection().then(() => {
-      redirectAfterSave()
-    })
-  } else if (action.value === 'edit') {
-    updateReflection(getId()).then(() => {
-      redirectAfterSave()
-    })
+  maybeAddAbstraction().then(() => {
+    switch (action.value) {
+      case 'add':
+        createReflection()
+        break
+      case 'edit':
+        updateReflection()
+        break
+      default:
+        break
+    }
+  })
+}
+
+function redirectHelper() {
+  if (reflection.value.abstractionId) {
+    router.push(`/abstractions/${reflection.value.abstractionId}`)
+  } else {
+    router.push('/reflections')
   }
+}
+
+function createReflection() {
+  return db.reflections
+    .add({
+      date: reflection.value.date,
+      description: reflection.value.description,
+      abstractionId: reflection.value.abstractionId,
+      implementsAbstraction: reflection.value.implementsAbstraction,
+    })
+    .then(() => {
+      redirectHelper()
+    })
 }
 
 /**
  * Fill all form fields with the data of the reflection we are editing
+ * And when the reflection already has an abstraction selected, we set it to the list of shown abstractions
  */
-function populateReflection(id: number) {
-  db.collection('reflections')
-    .doc({ id: id })
-    .get()
-    .then((doc) => {
-      theDate.value = doc.date
-      description.value = doc.description
-      abstractionId.value = doc.abstractionId
-      implementsAbstraction.value = doc.implementsAbstraction
-    })
-    /**
-     * If the reflection has an abstraction already selected, we set it to the list of shown abstractions
-     */
+function readReflection() {
+  db.reflections
+    .get(reflectionId)
+    .then((doc) => (reflection.value = doc))
     .then(() => {
-      if (abstractionId.value) {
-        getAbstractions().then(() => {
-          filteredAbstractions.value = abstractions.value.filter(
-            (abstraction) => abstraction.id === abstractionId.value
-          )
-        })
+      if (reflection.value.abstractionId) {
+        db.abstractions
+          .where({ id: reflection.value.abstractionId })
+          .toArray()
+          .then((docs) => (filteredAbstractions.value = docs))
       }
     })
 }
 
-function addReflection() {
-  const newReflection = {
-    id: Date.now(),
-    date: theDate.value,
-    description: description.value,
-    abstractionId: abstractionId.value,
-    implementsAbstraction: implementsAbstraction.value,
-  }
-  return db.collection('reflections').add(newReflection)
-}
-
-function updateReflection(id: number) {
-  return db.collection('reflections').doc({ id: id }).update({
-    date: theDate.value,
-    description: description.value,
-    abstractionId: abstractionId.value,
-    implementsAbstraction: implementsAbstraction.value,
+function updateReflection() {
+  return db.reflections.update(reflectionId, reflection.value).then(() => {
+    redirectHelper()
   })
 }
 
 function deleteReflection() {
-  db.collection('reflections')
-    .doc({ id: getId() })
-    .delete()
-    .then(() => {
-      router.push('/reflections')
-    })
+  db.reflections.delete(reflectionId).then(() => {
+    router.push('/reflections')
+  })
+}
+
+function maybeAddAbstraction() {
+  if (
+    !reflection.value.abstractionId &&
+    abstraction.value.description.length > 0
+  ) {
+    return db.abstractions
+      .add({
+        date: abstraction.value.date,
+        description: abstraction.value.description,
+      })
+      .then((id) => {
+        reflection.value.abstractionId = id
+        abstraction.value.description = ''
+      })
+  }
+  return new Promise((resolve) => {
+    resolve()
+  })
 }
 
 function filterAbstractions() {
-  const query = abstractionDescription.value
+  const query = abstraction.value.description.toLowerCase()
   if (query.length < 2) {
     filteredAbstractions.value = []
     return
   }
-  filteredAbstractions.value = abstractions.value.filter((abstraction) => {
-    return abstraction.description.toLowerCase().includes(query.toLowerCase())
-  })
+  db.abstractions
+    .filter((abstraction) => {
+      return abstraction.description.toLowerCase().includes(query)
+    })
+    .toArray()
+    .then((abstractions) => {
+      filteredAbstractions.value = abstractions
+    })
 }
 
 function unlinkAbstraction() {
-  abstractionId.value = null
-  abstractionDescription.value = ''
+  reflection.value.abstractionId = null
+  abstraction.value.description = ''
   filteredAbstractions.value = []
-}
-
-function maybeAddAbstraction() {
-  if (abstractionDescription.value.length > 0 && !abstractionId.value) {
-    const abstraction = {
-      id: Date.now(),
-      date: formattedString,
-      description: abstractionDescription.value,
-    }
-    abstractionId.value = abstraction.id
-    db.collection('abstractions')
-      .add(abstraction)
-      .then(() => {
-        abstractionDescription.value = ''
-      })
-  }
-}
-
-function redirectAfterSave() {
-  if (abstractionId.value) {
-    router.push(`/abstractions/${abstractionId.value}`)
-  } else {
-    router.push('/reflections')
-  }
 }
 </script>

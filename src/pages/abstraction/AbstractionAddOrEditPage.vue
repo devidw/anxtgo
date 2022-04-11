@@ -1,29 +1,46 @@
 <template>
   <q-page padding>
     <q-form class="q-gutter-md" @submit="onSubmit">
-      <div style="">
-        <q-input outlined v-model="theDate" mask="date" :rules="['date']">
-          <template v-slot:append>
-            <q-icon name="event" class="cursor-pointer">
-              <q-popup-proxy
-                ref="qDateProxy"
-                cover
-                transition-show="scale"
-                transition-hide="scale"
+      <q-input outlined v-model="abstraction.date" class="q-mb-md">
+        <template v-slot:prepend>
+          <q-icon name="event" class="cursor-pointer">
+            <q-popup-proxy
+              cover
+              transition-show="scale"
+              transition-hide="scale"
+            >
+              <q-date v-model="abstraction.date" mask="YYYY-MM-DD HH:mm">
+                <div class="row items-center justify-end">
+                  <q-btn v-close-popup label="Close" color="primary" flat />
+                </div>
+              </q-date>
+            </q-popup-proxy>
+          </q-icon>
+        </template>
+
+        <template v-slot:append>
+          <q-icon name="access_time" class="cursor-pointer">
+            <q-popup-proxy
+              cover
+              transition-show="scale"
+              transition-hide="scale"
+            >
+              <q-time
+                v-model="abstraction.date"
+                mask="YYYY-MM-DD HH:mm"
+                format24h
               >
-                <q-date v-model="theDate">
-                  <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
-                  </div>
-                </q-date>
-              </q-popup-proxy>
-            </q-icon>
-          </template>
-        </q-input>
-      </div>
+                <div class="row items-center justify-end">
+                  <q-btn v-close-popup label="Close" color="primary" flat />
+                </div>
+              </q-time>
+            </q-popup-proxy>
+          </q-icon>
+        </template>
+      </q-input>
 
       <q-input
-        v-model="description"
+        v-model="abstraction.description"
         outlined
         type="textarea"
         autogrow
@@ -54,75 +71,65 @@
   </q-page>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { date } from 'quasar'
-import Localbase from 'localbase'
+import { db } from '../../db'
 
 const router = useRouter()
 const route = useRoute()
-const db = new Localbase('db')
-let action = ref('')
-const formattedString = date.formatDate(Date.now(), 'YYYY/MM/DD')
-const theDate = ref(formattedString)
-const description = ref('')
-
-const getId = () => {
-  return Number(route.params.id)
-}
+const action = ref('')
+const abstractionId = Number(route.params.id)
+const abstraction = ref({
+  date: date.formatDate(Date.now(), 'YYYY-MM-DD HH:mm'),
+  description: '',
+})
 
 if (route.path.endsWith('add')) {
-  action = ref('add')
+  action.value = 'add'
 } else if (route.path.endsWith('edit')) {
-  action = ref('edit')
-  populateAbstraction(getId())
+  action.value = 'edit'
+  readAbstraction()
 }
 
 function onSubmit() {
-  if (action.value === 'add') {
-    addAbstraction().then((doc) => {
-      router.push(`/abstractions/${doc.data.data.id}`)
-    })
-  } else if (action.value === 'edit') {
-    updateAbstraction(getId()).then(() => {
-      router.push(`/abstractions/${getId()}`)
-    })
+  switch (action.value) {
+    case 'add':
+      createAbstraction()
+      break
+    case 'edit':
+      updateAbstraction()
+      break
   }
 }
 
-function populateAbstraction(id: number) {
-  db.collection('abstractions')
-    .doc({ id: id })
-    .get()
-    .then((doc) => {
-      theDate.value = doc.date
-      description.value = doc.description
+function createAbstraction() {
+  return db.abstractions
+    .add({
+      date: abstraction.value.date,
+      description: abstraction.value.description,
+    })
+    .then((id) => {
+      router.push(`/abstractions/${id}`)
     })
 }
 
-function addAbstraction() {
-  const newAbstraction = {
-    id: Date.now(),
-    date: theDate.value,
-    description: description.value,
-  }
-  return db.collection('abstractions').add(newAbstraction)
+function readAbstraction() {
+  return db.abstractions
+    .get(abstractionId)
+    .then((doc) => (abstraction.value = doc))
 }
 
-function updateAbstraction(id: number) {
-  return db.collection('abstractions').doc({ id: id }).update({
-    date: theDate.value,
-    description: description.value,
-  })
+function updateAbstraction() {
+  return db.abstractions
+    .update(abstractionId, abstraction.value)
+    .then(() => router.push(`/abstractions/${abstractionId}`))
 }
 
 function deleteAbstraction() {
-  db.collection('abstractions')
-    .doc({ id: getId() })
-    .delete()
-    .then(() => {
-      router.push('/abstractions')
-    })
+  db.abstractions.delete(abstractionId).then(() => {
+    router.push('/abstractions')
+  })
 }
 </script>
