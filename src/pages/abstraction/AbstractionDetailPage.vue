@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <q-timeline :layout="layout">
+    <q-timeline :layout="layout" class="q-pl-lg q-pl-sm-none">
       <q-timeline-entry heading>
         {{ rating > 0 ? `+${rating}` : rating }}
       </q-timeline-entry>

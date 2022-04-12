@@ -106,10 +106,7 @@ function onSubmit() {
 
 function createAbstraction() {
   return db.abstractions
-    .add({
-      date: abstraction.value.date,
-      description: abstraction.value.description,
-    })
+    .add(Object.assign({}, abstraction.value))
     .then((id) => {
       router.push(`/abstractions/${id}`)
     })

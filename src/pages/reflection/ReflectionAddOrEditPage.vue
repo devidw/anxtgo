@@ -249,16 +249,9 @@ function redirectHelper() {
 }
 
 function createReflection() {
-  return db.reflections
-    .add({
-      date: reflection.value.date,
-      description: reflection.value.description,
-      abstractionId: reflection.value.abstractionId,
-      implementsAbstraction: reflection.value.implementsAbstraction,
-    })
-    .then(() => {
-      redirectHelper()
-    })
+  return db.reflections.add(Object.assign({}, reflection.value)).then(() => {
+    redirectHelper()
+  })
 }
 
 /**
@@ -297,10 +290,7 @@ function maybeAddAbstraction() {
     abstraction.value.description.length > 0
   ) {
     return db.abstractions
-      .add({
-        date: abstraction.value.date,
-        description: abstraction.value.description,
-      })
+      .add(Object.assign({}, abstraction.value))
       .then((id) => {
         reflection.value.abstractionId = id
         abstraction.value.description = ''
