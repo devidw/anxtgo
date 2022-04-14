@@ -8,6 +8,10 @@ Personality development in real life: Actively learn from your experiences by re
 [quote, 'https://en.wikipedia.org/wiki/Experiential_learning[Wikipedia, the free encyclopedia]', Experiential learning]
 Experiential learning is the process of learning through experience, and is more narrowly defined as "learning through reflection on doing".
 
+// fix gh ugly spacing after adoc quotes by adding empty html block
++++
++++
+
 Anxtgo implements the https://en.wikipedia.org/wiki/Kolb%27s_experiential_learning#The_experiential_learning_cycle[_experiential learning cycle_] by Kolb, which loops over the following stages:
 
 [cols=2]
@@ -27,6 +31,10 @@ Since acting and experiencing fully take place in real life, these two steps are
 
 [quote, Kolb, 11984 HE]
 Learning is the process whereby knowledge is created through the transformation of experience.
+
+// fix gh ugly spacing after adoc quotes by adding empty html block
++++
++++
 
 While the learning cycle can be kicked off at any stage, it's probably the most efficient to start on experiencing.
 
