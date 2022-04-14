@@ -19,7 +19,7 @@ Anxtgo implements the https://en.wikipedia.org/wiki/Kolb%27s_experiential_learni
 . Abstract Conceptualization
 . Active Experimentation
 
-Since acting and experiencing fully take place in real life, these two steps are not integrated by Anxtgo directly, rather reflecting and abstracting are the core of Anxtgo, due to the fact that these stages are processed by our brains mainly. Here, Anxtgo comes into play and wraps the whole cycle into a digital experience to help us to go through the cycle with ease and getting the most out of it.
+Since acting and experiencing fully take place in real life, these two steps are not integrated by Anxtgo directly, rather reflecting and abstracting are the core part of Anxtgo, due to the fact that these stages are processed by our brains mainly. Here, Anxtgo comes into play and wraps the whole cycle into a digital experience to help us go through it with ease and getting the most out of it.
 
 
 == Why experiential learning?
@@ -33,14 +33,14 @@ Learning is the process whereby knowledge is created through the transformation 
 
 While the learning cycle can be kicked off at any stage, it's probably the most efficient to start on experiencing.
 
-If there is something positive or negative in a given experience, we faced it directly and therefore see the point directly. At this point, we are no longer talking about some theoretical thing anymore, it's something we are experiencing and reflecting on for real.
+If there is something positive or negative in a given experience, we faced it and therefore see the point directly. At this point, we are no longer talking about some theoretical thing anymore, it's something we are experiencing and reflecting on for real.
 
-Once we abstracted what we want to learn from the situation, it's a lot easier for us to remember our abstraction next time we enter a similar situation, because we linked that knowledge to an experience in our life, that's a natural human-like way to save information in our brain. Because of that, it's a lot easier for us to build up persistent knowledge and actively bring our abstractions into real actions in our life.
+Once we abstracted what we want to learn from the situation, it's a lot easier for us to remember our abstraction next time we enter a similar situation, because we linked that knowledge to an experience in our life. That's a natural human-like way to save information in our brains. Because of that, it's a also lot easier for us to build up persistent knowledge and actively bring our abstractions into real actions in our lifes.
 
 
 == Why Anxtgo?
 
 * Write reflections and abstractions in one single flow designed for effective experiential learning. Or write down your reflection and come back later to abstract on the reflection. Make use of every experience, never miss something to learn from.
-* Filter your personal list of reflections to quickly see what reflections you already have turn into abstractions on which you still have to get your head around.
-* Connect new reflections to existing abstractions to build up your own network of knowledge and get a detailed history view, of when you made which reflections, that led or tries to implement your abstraction.
-* Mark your reflections as implementations of your abstraction to generate a rating for each of your abstractions, which helps you see whether you are taking an abstraction into real life with success, and be able to sort all of your abstractions based on your scoring, to see what you should focus on and what you are doing great already.
+* Filter your personal list of reflections to quickly see what reflections you already have turned into abstractions and which you still have to get your head around.
+* Connect new reflections to existing abstractions to build up your own network of knowledge and get a detailed history view, of when you made which reflections, that led or tries to implement your abstractions.
+* Mark your reflections as implementations of your abstraction to generate a rating for each of your abstractions. This helps you see whether you are taking an abstraction into real life with success. Also you are able to sort all of your abstractions based on your scoring, to see what you should focus on and what you are doing great already.
