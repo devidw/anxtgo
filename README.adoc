@@ -1,7 +1,43 @@
 = Anxtgo
 
+Personality development in real life: Actively learn from your experiences by reflecting and abstracting them into persistent knowledge. Make mistakes only once, and improve what's already working. It's possible through the power of experiential learning.
+
+
 == What is experiential learning?
+
+[quote, 'https://en.wikipedia.org/wiki/Experiential_learning[Wikipedia, the free encyclopedia]', Experiential learning]
+Experiential learning is the process of learning through experience, and is more narrowly defined as "learning through reflection on doing".
+
+Anxtgo implements the https://en.wikipedia.org/wiki/Kolb%27s_experiential_learning#The_experiential_learning_cycle[_experiential learning cycle_] by Kolb, which loops over the following stages:
+
+[cols=2]
+|===
+| image:https://experientiallearninginstitute.org/wp-content/uploads/2020/11/IFEL-Learning-Cycle3.png[]
+a|
+. Concrete Experience
+. Reflective Observation
+. Abstract Conceptualization
+. Active Experimentation
+|===
+
+Since acting and experiencing fully take place in real life, these two steps are not integrated by Anxtgo directly, rather reflecting and abstracting are the core of Anxtgo, due to the fact that these stages are processed by our brains mainly. Here, Anxtgo comes into play and wraps the whole cycle into a digital experience to help us to go through the cycle with ease and getting the most out of it.
+
 
 == Why experiential learning?
 
+[quote, Kolb, 11984 HE]
+Learning is the process whereby knowledge is created through the transformation of experience.
+
+While the learning cycle can be kicked off at any stage, it's probably the most efficient to start on experiencing.
+
+If there is something positive or negative in a given experience, we faced it directly and therefore see the point directly. At this point, we are no longer talking about some theoretical thing anymore, it's something we are experiencing and reflecting on for real.
+
+Once we abstracted what we want to learn from the situation, it's a lot easier for us to remember our abstraction next time we enter a similar situation, because we linked that knowledge to an experience in our life, that's a natural human-like way to save information in our brain. Because of that, it's a lot easier for us to build up persistent knowledge and actively bring our abstractions into real actions in our life.
+
+
 == Why Anxtgo?
+
+* Write reflections and abstractions in one single flow designed for effective experiential learning. Or write down your reflection and come back later to abstract on the reflection. Make use of every experience, never miss something to learn from.
+* Filter your personal list of reflections to quickly see what reflections you already have turn into abstractions on which you still have to get your head around.
+* Connect new reflections to existing abstractions to build up your own network of knowledge and get a detailed history view, of when you made which reflections, that led or tries to implement your abstraction.
+* Mark your reflections as implementations of your abstraction to generate a rating for each of your abstractions, which helps you see whether you are taking an abstraction into real life with success, and be able to sort all of your abstractions based on your scoring, to see what you should focus on and what you are doing great already.
