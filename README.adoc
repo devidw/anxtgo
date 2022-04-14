@@ -3,7 +3,9 @@
 Personality development in real life: Actively learn from experiences by reflecting and abstracting them into persistent knowledge. Make mistakes only once, and improve what's already working. It's possible through the power of experiential learning.
 
 
-== What is experiential learning?
+== The Project
+
+=== What is experiential learning?
 
 [quote, 'https://en.wikipedia.org/wiki/Experiential_learning[Wikipedia, the free encyclopedia]', Experiential learning]
 Experiential learning is the process of learning through experience, and is more narrowly defined as "learning through reflection on doing".
@@ -22,7 +24,7 @@ Anxtgo implements the https://en.wikipedia.org/wiki/Kolb%27s_experiential_learni
 Since acting and experiencing fully take place in real life, these two steps are not integrated by Anxtgo directly, rather reflecting and abstracting are the core part of Anxtgo, due to the fact that these stages are processed by our brains mainly. Here, Anxtgo comes into play and wraps the whole cycle into a digital experience to help us go through it with ease and getting the most out of it.
 
 
-== Why experiential learning?
+=== Why experiential learning?
 
 [quote, Kolb, 11984 HE]
 Learning is the process whereby knowledge is created through the transformation of experience.
@@ -38,9 +40,14 @@ If there is something positive or negative in a given experience, we faced it an
 Once we abstracted what we want to learn from the situation, it's a lot easier for us to remember our abstraction next time we enter a similar situation, because we linked that knowledge to an experience in our life. That's a natural human-like way to save information in our brains. Because of that, it's a also lot easier for us to build up persistent knowledge and actively bring our abstractions into real actions in our lifes.
 
 
-== Why Anxtgo?
+=== Why Anxtgo?
 
 * Write reflections and abstractions in one single flow designed for effective experiential learning. Or write down your reflection and come back later to abstract on the reflection. Make use of every experience, never miss something to learn from.
 * Filter your personal list of reflections to quickly see what reflections you already have turned into abstractions and which you still have to get your head around.
 * Connect new reflections to existing abstractions to build up your own network of knowledge and get a detailed history view, of when you made which reflections, that led or tries to implement your abstractions.
 * Mark your reflections as implementations of your abstraction to generate a rating for each of your abstractions. This helps you see whether you are taking an abstraction into real life with success. Also you are able to sort all of your abstractions based on your scoring, to see what you should focus on and what you are doing great already.
+
+
+== The App
+
+Anxtgo is build with https://vuejs.org[Vue.js], https://quasar.dev[Quasar] and https://dexie.org[Dexie.js].
