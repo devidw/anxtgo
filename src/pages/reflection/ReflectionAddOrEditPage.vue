@@ -91,7 +91,7 @@
               <q-item-section>
                 <q-item-label>
                   <q-item-label>
-                    {{ abstraction.date }}
+                    {{ formatDateDefault(abstraction.date) }}
                   </q-item-label>
                   <q-item-label caption v-html="abstraction.description" />
                 </q-item-label>
@@ -180,7 +180,7 @@ import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { date } from 'quasar'
 import { db } from 'boot/db'
-import { toolbar } from 'boot/utils'
+import { toolbar, formatDateDefault } from 'boot/utils'
 
 const router = useRouter()
 const route = useRoute()
