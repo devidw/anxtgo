@@ -53,13 +53,10 @@
             </template>
           </q-input>
 
-          <q-input
+          <q-editor
             v-model="reflection.description"
-            outlined
-            autogrow
-            type="textarea"
-            label="Reflection"
-            :rules="[(val) => !!val || 'Field is required']"
+            :toolbar="toolbar"
+            toolbar-rounded
           />
         </q-step>
 
@@ -69,14 +66,12 @@
           icon="psychology"
           :done="done[2]"
         >
-          <q-input
+          <q-editor
             v-if="!reflection.abstractionId"
             v-model="abstraction.description"
             @keyup="filterAbstractions"
-            outlined
-            autogrow
-            type="textarea"
-            label="Abstraction"
+            :toolbar="toolbar"
+            toolbar-rounded
             class="q-mb-lg"
           />
           <q-list>
@@ -98,9 +93,7 @@
                   <q-item-label>
                     {{ abstraction.date }}
                   </q-item-label>
-                  <q-item-label caption>
-                    {{ abstraction.description }}
-                  </q-item-label>
+                  <q-item-label caption v-html="abstraction.description" />
                 </q-item-label>
               </q-item-section>
             </q-item>
@@ -186,7 +179,8 @@
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { date } from 'quasar'
-import { db } from '../../db'
+import { db } from 'boot/db'
+import { toolbar } from 'boot/utils'
 
 const router = useRouter()
 const route = useRoute()
@@ -323,3 +317,5 @@ function unlinkAbstraction() {
   filteredAbstractions.value = []
 }
 </script>
+
+<style lang="sass"></style>

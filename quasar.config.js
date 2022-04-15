@@ -34,7 +34,6 @@ module.exports = configure(function (ctx) {
     // https://v2.quasar.dev/quasar-cli-webpack/boot-files
     boot: [
 
-
     ],
 
     // https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js#Property%3A-css
@@ -150,8 +149,8 @@ module.exports = configure(function (ctx) {
       // chainWebpackCustomSW (/* chain */) {},
 
       manifest: {
-        name: 'Experiential learning',
-        short_name: 'ExL',
+        name: 'Anxtgo',
+        short_name: 'anxtgo',
         description: '',
         display: 'standalone',
         orientation: 'portrait',

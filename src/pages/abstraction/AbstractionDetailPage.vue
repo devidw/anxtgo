@@ -7,10 +7,8 @@
       <q-timeline-entry
         v-for="station in stations"
         :key="station.id"
-        :side="
-          isReflection(station) ? (isPos(station) ? 'left' : 'right') : 'left'
-        "
-        :title="station.date"
+        side="right"
+        :title="formatDateDefault(station.date)"
         :subtitle="isReflection(station) ? 'Reflection' : 'Abstraction'"
         :icon="
           isReflection(station)
@@ -31,9 +29,7 @@
             : 'info'
         "
       >
-        <div class="q-mb-md c-desc">
-          {{ station.description }}
-        </div>
+        <div class="q-mb-md" v-html="station.description"></div>
         <div class="q-mb-xl">
           <q-btn
             outline
@@ -53,7 +49,8 @@ import { ref, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { useAbstractionRating } from './rating'
-import { db } from '../../db'
+import { db } from 'boot/db'
+import { formatDateDefault } from 'boot/utils'
 
 const router = useRouter()
 const route = useRoute()
@@ -110,7 +107,4 @@ const goToEdit = (station) => {
 }
 </script>
 
-<style lang="sass">
-.c-desc
-  white-space: pre-wrap
-</style>
+<style lang="sass"></style>

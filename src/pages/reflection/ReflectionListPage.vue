@@ -41,7 +41,8 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { date } from 'quasar'
-import { db } from '../../db'
+import { db } from 'boot/db'
+import { stripHtml, formatDateDefault } from 'boot/utils'
 
 const pagination = ref({
   sortBy: 'date',
@@ -54,13 +55,13 @@ const columns = [
     label: 'Date',
     name: 'date',
     field: (row) => row.date,
-    format: (value) => date.formatDate(value, 'D MMM YYYY HH:mm'),
+    format: (value) => formatDateDefault(value),
     sortable: true,
   },
   {
     label: 'Description',
     name: 'description',
-    field: (row) => row.description,
+    field: (row) => stripHtml(row.description),
     format: (value) => value.substring(0, 100),
   },
   {

@@ -11,7 +11,7 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title> Experiential learning </q-toolbar-title>
+        <q-toolbar-title> {{ 'Anxtgo' }} </q-toolbar-title>
       </q-toolbar>
     </q-header>
 

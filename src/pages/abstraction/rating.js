@@ -1,4 +1,4 @@
-import { db } from '../../db'
+import { db } from 'boot/db'
 
 /**
  * Returns the rating of an abstraction.

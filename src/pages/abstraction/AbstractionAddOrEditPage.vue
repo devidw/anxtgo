@@ -39,13 +39,10 @@
         </template>
       </q-input>
 
-      <q-input
+      <q-editor
         v-model="abstraction.description"
-        outlined
-        type="textarea"
-        autogrow
-        label="Abstraction"
-        :rules="[(val) => !!val || 'Field is required']"
+        :toolbar="toolbar"
+        toolbar-rounded
       />
 
       <div class="row justify-between">
@@ -75,7 +72,8 @@
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { date } from 'quasar'
-import { db } from '../../db'
+import { db } from 'boot/db'
+import { toolbar } from 'boot/utils'
 
 const router = useRouter()
 const route = useRoute()

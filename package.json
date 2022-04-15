@@ -2,7 +2,7 @@
   "name": "anxtgo",
   "version": "0.0.1",
   "description": "A Quasar Project",
-  "productName": "Experiential learning",
+  "productName": "Anxtgo",
   "author": "David Wolf <david@wolf.gdn>",
   "private": true,
   "scripts": {

@@ -52,7 +52,7 @@ import { useQuasar } from 'quasar'
 import { Dexie } from 'dexie'
 import 'dexie-export-import'
 import download from 'downloadjs'
-import { db } from '../db'
+import { db } from '../boot/db'
 
 const $q = useQuasar()
 const importFile = ref(null)

@@ -1,4 +1,18 @@
+*
+  &::selection
+    background: $primary
+    color: white
+
 .q-btn__content
   & > .q-icon
     &.on-left
       margin-right: 8px
+
+
+.q-editor__toolbar-group
+  // Fullscreen toggle shuld be at the end of the toolbar on the right side
+  &:last-of-type
+    margin-left: auto
+
+    &::before
+      display: none

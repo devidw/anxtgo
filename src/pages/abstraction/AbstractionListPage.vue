@@ -33,7 +33,8 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { date } from 'quasar'
 import { useAbstractionRating } from './rating'
-import { db } from '../../db'
+import { db } from 'boot/db'
+import { stripHtml, formatDateDefault } from 'boot/utils'
 
 const pagination = ref({
   sortBy: 'rating',
@@ -46,14 +47,14 @@ const columns = [
     label: 'Date',
     name: 'date',
     field: (row) => row.date,
-    format: (value) => date.formatDate(value, 'D MMM YYYY'),
+    format: (value) => formatDateDefault(value),
     // align: 'left',
     sortable: true,
   },
   {
     label: 'Description',
     name: 'description',
-    field: (row) => row.description,
+    field: (row) => stripHtml(row.description),
     format: (value) => value.substring(0, 100),
   },
   {
