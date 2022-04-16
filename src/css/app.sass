@@ -9,10 +9,19 @@
       margin-right: 8px
 
 
+// Fullscreen toggle shuld be at the end of the toolbar on the right side
 .q-editor__toolbar-group
-  // Fullscreen toggle shuld be at the end of the toolbar on the right side
   &:last-of-type
     margin-left: auto
 
     &::before
       display: none
+
+// List view pages with grid tables
+.q-table--grid
+  // Only show sortable table header columns
+  th:not(.sortable)
+    display: none
+
+  .q-card
+    cursor: pointer

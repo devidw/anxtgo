@@ -23,7 +23,7 @@
                   transition-show="scale"
                   transition-hide="scale"
                 >
-                  <q-date v-model="reflection.date" mask="YYYY-MM-DD HH:mm">
+                  <q-date v-model="reflection.date" mask="YYYY-MM-DD HH:mm:ss">
                     <div class="row items-center justify-end">
                       <q-btn v-close-popup label="Close" color="primary" flat />
                     </div>
@@ -41,8 +41,9 @@
                 >
                   <q-time
                     v-model="reflection.date"
-                    mask="YYYY-MM-DD HH:mm"
+                    mask="YYYY-MM-DD HH:mm:ss"
                     format24h
+                    with-seconds
                   >
                     <div class="row items-center justify-end">
                       <q-btn v-close-popup label="Close" color="primary" flat />
@@ -187,13 +188,13 @@ const route = useRoute()
 const action = ref('')
 const reflectionId = Number(route.params.id)
 const reflection = ref({
-  date: date.formatDate(Date.now(), 'YYYY-MM-DD HH:mm'),
+  date: date.formatDate(Date.now(), 'YYYY-MM-DD HH:mm:ss'),
   description: '',
   abstractionId: null,
   implementsAbstraction: null,
 })
 const abstraction = ref({
-  date: date.formatDate(Date.now(), 'YYYY-MM-DD HH:mm'),
+  date: date.formatDate(Date.now(), 'YYYY-MM-DD HH:mm:ss'),
   description: '',
 })
 const filteredAbstractions = ref([])

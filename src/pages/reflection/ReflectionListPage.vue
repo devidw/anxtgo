@@ -12,7 +12,6 @@
       :binary-state-sort="true"
       :pagination="pagination"
       :rows-per-page-options="rowsPerPageOptions"
-      @row-click="onRowClick"
     >
       <template v-slot:top>
         <div class="fit row justify-between">
@@ -33,6 +32,61 @@
           />
         </div>
       </template>
+
+      <template v-slot:item="props">
+        <div
+          class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+        >
+          <q-card class="column fit" @click="onRowClick(props.row)">
+            <q-card-section>
+              <div class="text-h6">
+                {{ formatDate(props.row.date, 'dddd, MMMM DD, YYYY') }}
+              </div>
+              <div class="text-subtitle text-grey">
+                at {{ formatDate(props.row.date, 'HH:mm:ss') }}
+              </div>
+            </q-card-section>
+            <q-card-section class="q-pt-none">
+              <div v-html="props.row.description"></div>
+            </q-card-section>
+            <q-separator class="q-mt-auto" />
+            <q-card-section class="row justify-between">
+              <div>
+                <q-icon
+                  :name="
+                    props.row.abstractionId
+                      ? 'task_alt'
+                      : 'radio_button_unchecked'
+                  "
+                  left
+                  class="q-mr-xs"
+                />
+                <span
+                  v-html="
+                    props.row.abstractionId ? 'Abstracted' : 'Not abstracted'
+                  "
+                />
+              </div>
+              <q-icon
+                :name="
+                  props.cols[3].value === true
+                    ? 'thumb_up'
+                    : props.cols[3].value === false
+                    ? 'thumb_down'
+                    : 'thumbs_up_down'
+                "
+                :color="
+                  props.cols[3].value === true
+                    ? 'positive'
+                    : props.cols[3].value === false
+                    ? 'negative'
+                    : 'orange'
+                "
+              />
+            </q-card-section>
+          </q-card>
+        </div>
+      </template>
     </q-table>
   </q-page>
 </template>
@@ -44,6 +98,7 @@ import { date } from 'quasar'
 import { db } from 'boot/db'
 import { stripHtml, formatDateDefault } from 'boot/utils'
 
+const { formatDate } = date
 const pagination = ref({
   sortBy: 'date',
   descending: true,
@@ -55,7 +110,7 @@ const columns = [
     label: 'Date',
     name: 'date',
     field: (row) => row.date,
-    format: (value) => formatDateDefault(value),
+    format: (value) => value,
     sortable: true,
   },
   {
@@ -68,18 +123,17 @@ const columns = [
     label: 'Abstracted',
     name: 'abstractionId',
     field: (row) => row.abstractionId,
-    format: (value) => (value ? 'Yes' : 'No'),
+    format: (value) => value,
   },
   {
     label: 'Implements abstraction?',
     name: 'implementsAbstraction',
     field: (row) => row.implementsAbstraction,
-    format: (value) => (value === true ? 'Yes' : value === false ? 'No' : '?'),
+    format: (value) => value,
   },
 ]
 const rows = ref([])
-const options = ref(['All', 'Already abstracted', 'Not yet abstracted'])
-// const showAbstracted = ref('Not yet abstracted')
+const options = ref(['All', 'Not yet abstracted', 'Not yet rated'])
 const showAbstracted = ref('All')
 
 db.reflections.toArray().then((reflections) => {
@@ -97,10 +151,12 @@ function filterBy(rows) {
     switch (showAbstracted.value) {
       case 'All':
         return true
-      case 'Already abstracted':
-        return row.abstractionId !== null
+      // case 'Already abstracted':
+      //   return row.abstractionId !== null
       case 'Not yet abstracted':
         return row.abstractionId === null
+      case 'Not yet rated':
+        return row.implementsAbstraction === null
       default:
         return true
     }
@@ -108,10 +164,7 @@ function filterBy(rows) {
 }
 
 const router = useRouter()
-const onRowClick = (evt, row) => router.push(`/reflections/${row.id}/edit`)
+const onRowClick = (row) => router.push(`/reflections/${row.id}/edit`)
 </script>
 
-<style lang="sass">
-th:not(.sortable)
-  display: none
-</style>
+<style lang="sass"></style>

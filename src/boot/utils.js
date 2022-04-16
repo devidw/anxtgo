@@ -2,7 +2,7 @@ import { date } from 'quasar'
 const { formatDate } = date
 
 export const formatDateDefault = (date) => {
-  return formatDate(date, 'dddd, MMMM d, YYYY') + ' at ' + formatDate(date, 'HH:mm')
+  return formatDate(date, 'dddd, MMMM DD, YYYY') + ' at ' + formatDate(date, 'HH:mm:ss')
 }
 
 export const required = (val) => !!val || 'Field is required'

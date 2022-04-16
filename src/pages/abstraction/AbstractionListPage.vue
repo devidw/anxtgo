@@ -24,6 +24,43 @@
           />
         </div>
       </template>
+
+      <template v-slot:item="props">
+        <div
+          class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+        >
+          <q-card class="column fit" @click="onRowClick(props.row)">
+            <q-card-section>
+              <div class="text-h6">
+                {{ formatDate(props.row.date, 'dddd, MMMM DD, YYYY') }}
+              </div>
+              <div class="text-subtitle text-grey">
+                at {{ formatDate(props.row.date, 'HH:mm:ss') }}
+              </div>
+            </q-card-section>
+            <q-card-section class="q-pt-none">
+              <div v-html="props.row.description"></div>
+            </q-card-section>
+            <q-separator class="q-mt-auto" />
+            <q-card-section class="row justify-end">
+              <div class="text-bold">
+                <div
+                  :class="
+                    props.row.rating > 0
+                      ? 'text-positive'
+                      : props.row.rating < 0
+                      ? 'text-negative'
+                      : 'text-orange'
+                  "
+                >
+                  {{ props.row.rating > 0 ? '+' : '' }}{{ props.row.rating }}
+                  <!-- <q-icon name="trending_up" /> -->
+                </div>
+              </div>
+            </q-card-section>
+          </q-card>
+        </div>
+      </template>
     </q-table>
   </q-page>
 </template>
@@ -36,6 +73,7 @@ import { useAbstractionRating } from './rating'
 import { db } from 'boot/db'
 import { stripHtml, formatDateDefault } from 'boot/utils'
 
+const { formatDate } = date
 const pagination = ref({
   sortBy: 'rating',
   descending: false,
@@ -47,21 +85,21 @@ const columns = [
     label: 'Date',
     name: 'date',
     field: (row) => row.date,
-    format: (value) => formatDateDefault(value),
+    format: (value) => value,
     // align: 'left',
     sortable: true,
   },
   {
     label: 'Description',
     name: 'description',
-    field: (row) => stripHtml(row.description),
-    format: (value) => value.substring(0, 100),
+    field: (row) => row.description,
+    format: (value) => value,
   },
   {
     label: 'Rating',
     name: 'rating',
     field: (row) => row.rating,
-    format: (value) => (value > 0 ? `+${value}` : value),
+    format: (value) => value,
     sortable: true,
   },
 ]
@@ -84,10 +122,7 @@ db.abstractions
   })
 
 const router = useRouter()
-const onRowClick = (evt, row) => router.push(`/abstractions/${row.id}`)
+const onRowClick = (row) => router.push(`/abstractions/${row.id}`)
 </script>
 
-<style lang="sass">
-th:not(.sortable)
-  display: none
-</style>
+<style lang="sass"></style>
