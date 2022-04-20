@@ -181,7 +181,7 @@ import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { date } from 'quasar'
 import { db } from 'boot/db'
-import { toolbar, formatDateDefault } from 'boot/utils'
+import { toolbar, formatDateDefault, standardizeText } from 'boot/utils'
 
 const router = useRouter()
 const route = useRoute()
@@ -297,14 +297,14 @@ function maybeAddAbstraction() {
 }
 
 function filterAbstractions() {
-  const query = abstraction.value.description.toLowerCase()
+  const query = standardizeText(abstraction.value.description)
   if (query.length < 2) {
     filteredAbstractions.value = []
     return
   }
   db.abstractions
     .filter((abstraction) => {
-      return abstraction.description.toLowerCase().includes(query)
+      return standardizeText(abstraction.description).includes(query)
     })
     .toArray()
     .then((abstractions) => {

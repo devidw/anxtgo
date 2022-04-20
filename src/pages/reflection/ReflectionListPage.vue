@@ -6,38 +6,64 @@
       title="Reflections"
       :rows="rows"
       :columns="columns"
-      :filter="showAbstracted"
+      :filter="filter"
       :filter-method="filterBy"
       row-key="name"
       :binary-state-sort="true"
       :pagination="pagination"
       :rows-per-page-options="rowsPerPageOptions"
     >
-      <template v-slot:top>
-        <div class="fit row justify-between">
-          <q-btn
-            label="Add"
-            color="primary"
-            icon="add"
-            outline
-            rounded
-            to="/reflections/add"
-          />
-          <q-select
-            v-if="rows.length > 0"
-            rounded
-            outlined
-            v-model="showAbstracted"
-            :options="options"
-          />
-        </div>
+      <template v-slot:top-left>
+        <q-btn
+          label="Add"
+          color="primary"
+          icon="add"
+          outline
+          rounded
+          to="/reflections/add"
+          class="q-mb-xs-md q-mb-sm-none"
+        />
+      </template>
+
+      <template v-slot:top-right v-if="rows.length > 0">
+        <q-input
+          rounded
+          outlined
+          dense
+          debounce="300"
+          v-model="filter.search"
+          placeholder="Search"
+          class="q-mr-md"
+        >
+          <template v-slot:prepend>
+            <q-icon name="search" />
+          </template>
+          <template v-slot:append>
+            <q-icon
+              name="close"
+              @click="filter.search = ''"
+              class="cursor-pointer"
+            />
+          </template>
+        </q-input>
+
+        <q-select
+          v-model="filter.showAbstracted"
+          :options="options"
+          rounded
+          outlined
+          dense
+        />
       </template>
 
       <template v-slot:item="props">
         <div
           class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
         >
-          <q-card class="column fit" @click="onRowClick(props.row)">
+          <q-card
+            class="column fit cursor-pointer"
+            @click="onRowClick(props.row)"
+          >
             <q-card-section>
               <div class="text-h6">
                 {{ formatDate(props.row.date, 'dddd, MMMM DD, YYYY') }}
@@ -96,7 +122,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { date } from 'quasar'
 import { db } from 'boot/db'
-import { stripHtml, formatDateDefault } from 'boot/utils'
+import { standardizeText } from 'boot/utils'
 
 const { formatDate } = date
 const pagination = ref({
@@ -116,7 +142,7 @@ const columns = [
   {
     label: 'Description',
     name: 'description',
-    field: (row) => stripHtml(row.description),
+    field: (row) => row.description,
     format: (value) => value.substring(0, 100),
   },
   {
@@ -134,7 +160,10 @@ const columns = [
 ]
 const rows = ref([])
 const options = ref(['All', 'Not yet abstracted', 'Not yet rated'])
-const showAbstracted = ref('All')
+const filter = ref({
+  search: '',
+  showAbstracted: 'All',
+})
 
 db.reflections.toArray().then((reflections) => {
   rows.value = reflections
@@ -148,7 +177,14 @@ db.reflections.toArray().then((reflections) => {
  */
 function filterBy(rows) {
   return rows.filter((row) => {
-    switch (showAbstracted.value) {
+    if (filter.value.search) {
+      const search = standardizeText(filter.value.search)
+      const description = standardizeText(row.description)
+      if (!description.includes(search)) {
+        return false
+      }
+    }
+    switch (filter.value.showAbstracted) {
       case 'All':
         return true
       // case 'Already abstracted':

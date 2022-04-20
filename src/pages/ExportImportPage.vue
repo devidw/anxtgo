@@ -17,10 +17,11 @@
         <q-file
           v-model="importFile"
           label="Pick one file"
+          accept=".json"
           outlined
           rounded
+          dense
           style="max-width: 300px"
-          accept=".json"
         >
           <template v-slot:prepend>
             <q-icon name="attach_file" @click.stop />

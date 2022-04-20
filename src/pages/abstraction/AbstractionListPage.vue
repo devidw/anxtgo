@@ -7,12 +7,13 @@
       :rows="rows"
       :columns="columns"
       row-key="name"
-      @row-click="onRowClick"
-      :binary-state-sort="true"
+      binary-state-sort
       :pagination="pagination"
       :rows-per-page-options="rowsPerPageOptions"
+      :filter="filter"
+      :filter-method="filterBy"
     >
-      <template v-slot:top>
+      <template v-slot:top-left>
         <div class="q-gutter-sm">
           <q-btn
             label="Add"
@@ -25,11 +26,32 @@
         </div>
       </template>
 
+      <template v-slot:top-right v-if="rows.length > 0">
+        <q-input
+          rounded
+          outlined
+          dense
+          debounce="300"
+          v-model="filter"
+          placeholder="Search"
+        >
+          <template v-slot:prepend>
+            <q-icon name="search" />
+          </template>
+          <template v-slot:append>
+            <q-icon name="close" @click="filter = ''" class="cursor-pointer" />
+          </template>
+        </q-input>
+      </template>
+
       <template v-slot:item="props">
         <div
           class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
         >
-          <q-card class="column fit" @click="onRowClick(props.row)">
+          <q-card
+            class="column fit cursor-pointer"
+            @click="onRowClick(props.row)"
+          >
             <q-card-section>
               <div class="text-h6">
                 {{ formatDate(props.row.date, 'dddd, MMMM DD, YYYY') }}
@@ -71,7 +93,7 @@ import { useRouter } from 'vue-router'
 import { date } from 'quasar'
 import { useAbstractionRating } from './rating'
 import { db } from 'boot/db'
-import { stripHtml, formatDateDefault } from 'boot/utils'
+import { standardizeText } from 'boot/utils'
 
 const { formatDate } = date
 const pagination = ref({
@@ -104,6 +126,7 @@ const columns = [
   },
 ]
 const rows = ref([])
+const filter = ref('')
 
 db.abstractions
   .toArray()
@@ -123,6 +146,17 @@ db.abstractions
 
 const router = useRouter()
 const onRowClick = (row) => router.push(`/abstractions/${row.id}`)
+
+const filterBy = (rows) => {
+  if (!filter.value.search) {
+    return true
+  }
+  return rows.filter((row) => {
+    const search = standardizeText(filter.value)
+    const description = standardizeText(row.description)
+    return description.includes(search)
+  })
+}
 </script>
 
 <style lang="sass"></style>

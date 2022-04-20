@@ -4,6 +4,9 @@
       <q-timeline-entry heading>
         {{ rating > 0 ? `+${rating}` : rating }}
       </q-timeline-entry>
+      <q-timeline-entry icon="add">
+        <div class="q-mb-xl" />
+      </q-timeline-entry>
       <q-timeline-entry
         v-for="station in stations"
         :key="station.id"
