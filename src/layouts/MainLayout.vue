@@ -33,11 +33,28 @@
   </q-layout>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from 'vue'
+<script setup>
+import { ref } from 'vue'
+import { useCryptoStore } from 'stores/crypto'
 import EssentialLink from 'components/EssentialLink.vue'
 
-const linksList = [
+const crypto = useCryptoStore()
+const leftDrawerOpen = ref(false)
+const essentialLinks = ref([])
+const toggleLeftDrawer = () => {
+  leftDrawerOpen.value = !leftDrawerOpen.value
+}
+
+const encryptedLinks = [
+  {
+    title: 'Encryption & Decryption',
+    caption: 'Encrypt and decrypt data',
+    icon: 'lock',
+    link: '/encryption-decryption',
+  },
+]
+
+const decryptedLinks = [
   {
     title: 'Reflections',
     caption: 'Reflect on experiences',
@@ -51,30 +68,17 @@ const linksList = [
     link: '/abstractions',
   },
   {
-    title: 'Export & import',
+    title: 'Export & Import',
     caption: 'Export and import your data',
     icon: 'sync',
     link: '/export-import',
   },
 ]
 
-export default defineComponent({
-  name: 'MainLayout',
+essentialLinks.value = crypto.isEncrypted ? encryptedLinks : decryptedLinks
 
-  components: {
-    EssentialLink,
-  },
-
-  setup() {
-    const leftDrawerOpen = ref(false)
-
-    return {
-      essentialLinks: linksList,
-      leftDrawerOpen,
-      toggleLeftDrawer() {
-        leftDrawerOpen.value = !leftDrawerOpen.value
-      },
-    }
-  },
+crypto.$subscribe((mutation, state) => {
+  essentialLinks.value =
+    state.crypto === 'encrypted' ? encryptedLinks : decryptedLinks
 })
 </script>
