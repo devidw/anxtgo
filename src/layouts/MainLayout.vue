@@ -35,26 +35,10 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useCryptoStore } from 'stores/crypto'
 import EssentialLink from 'components/EssentialLink.vue'
 
-const crypto = useCryptoStore()
 const leftDrawerOpen = ref(false)
-const essentialLinks = ref([])
-const toggleLeftDrawer = () => {
-  leftDrawerOpen.value = !leftDrawerOpen.value
-}
-
-const encryptedLinks = [
-  {
-    title: 'Encryption & Decryption',
-    caption: 'Encrypt and decrypt data',
-    icon: 'lock',
-    link: '/encryption-decryption',
-  },
-]
-
-const decryptedLinks = [
+const essentialLinks = ref([
   {
     title: 'Reflections',
     caption: 'Reflect on experiences',
@@ -73,12 +57,8 @@ const decryptedLinks = [
     icon: 'sync',
     link: '/export-import',
   },
-]
-
-essentialLinks.value = crypto.isEncrypted ? encryptedLinks : decryptedLinks
-
-crypto.$subscribe((mutation, state) => {
-  essentialLinks.value =
-    state.crypto === 'encrypted' ? encryptedLinks : decryptedLinks
-})
+])
+const toggleLeftDrawer = () => {
+  leftDrawerOpen.value = !leftDrawerOpen.value
+}
 </script>

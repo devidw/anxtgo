@@ -15,7 +15,6 @@
     "@vueuse/rxjs": "^8.2.5",
     "core-js": "^3.6.5",
     "dexie": "^3.2.1",
-    "dexie-encrypted": "^2.0.0",
     "dexie-export-import": "^1.0.3",
     "dotenv": "^16.0.0",
     "downloadjs": "^1.4.7",
