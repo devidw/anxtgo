@@ -208,14 +208,29 @@ const done = ref({
 })
 const step = ref(1)
 
-if (route.path.endsWith('add')) {
-  action.value = 'add'
-} else if (route.path.endsWith('edit')) {
-  action.value = 'edit'
-  readReflection()
-} else {
-  router.push('/reflections')
-}
+/**
+ * What are we here for?
+ */
+;(() => {
+  if (route.path.endsWith('add')) {
+    action.value = 'add'
+  } else if (route.path.endsWith('edit')) {
+    action.value = 'edit'
+    readReflectionAndMaybeAbstraction()
+  } else {
+    router.push('/reflections')
+  }
+})()
+
+/**
+ * Populate the abstraction based on the passed query parameter
+ */
+;(() => {
+  if (route.query.abstractionId) {
+    reflection.value.abstractionId = Number(route.query.abstractionId)
+    readAbstraction()
+  }
+})()
 
 /**
  * Process submission to handle maybe add a new abstraction and after that create or update the reflection
@@ -253,18 +268,22 @@ function createReflection() {
  * Fill all form fields with the data of the reflection we are editing
  * And when the reflection already has an abstraction selected, we set it to the list of shown abstractions
  */
-function readReflection() {
+function readReflectionAndMaybeAbstraction() {
   db.reflections
     .get(reflectionId)
     .then((doc) => (reflection.value = doc))
     .then(() => {
       if (reflection.value.abstractionId) {
-        db.abstractions
-          .where({ id: reflection.value.abstractionId })
-          .toArray()
-          .then((docs) => (filteredAbstractions.value = docs))
+        readAbstraction()
       }
     })
+}
+
+function readAbstraction() {
+  db.abstractions
+    .where({ id: reflection.value.abstractionId })
+    .toArray()
+    .then((docs) => (filteredAbstractions.value = docs))
 }
 
 function updateReflection() {

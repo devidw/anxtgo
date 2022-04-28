@@ -1,15 +1,17 @@
 <template>
   <q-page padding>
-    <q-timeline :layout="layout" class="q-pl-lg q-pl-sm-none">
+    <q-timeline :layout="layout" dark class="q-pl-lg q-pl-sm-none">
       <q-timeline-entry heading>
         {{ rating > 0 ? `+${rating}` : rating }}
       </q-timeline-entry>
-      <q-timeline-entry icon="add">
+
+      <q-timeline-entry icon="add" class="a-add-entry">
         <div class="q-mb-xl" />
       </q-timeline-entry>
+
       <q-timeline-entry
-        v-for="station in stations"
-        :key="station.id"
+        v-for="(station, index) in stations"
+        :key="index"
         side="right"
         :title="formatDateDefault(station.date)"
         :subtitle="isReflection(station) ? 'Reflection' : 'Abstraction'"
@@ -48,7 +50,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { useAbstractionRating } from './rating'
@@ -108,6 +110,23 @@ const goToEdit = (station) => {
   }
   router.push(`/abstractions/${station.id}/edit`)
 }
+
+onMounted(() => {
+  /**
+   * Manually set the click handler for the add button since there is no way to configure the quasar timeline entry to have a click event
+   */
+  ;(() => {
+    document.querySelector('.a-add-entry .q-timeline__dot i').onclick = () => {
+      router.push({
+        path: '/reflections/add',
+        query: { abstractionId: id },
+      })
+    }
+  })()
+})
 </script>
 
-<style lang="sass"></style>
+<style lang="sass">
+.a-add-entry .q-timeline__dot i
+    cursor: pointer
+</style>
