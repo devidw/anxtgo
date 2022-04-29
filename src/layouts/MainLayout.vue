@@ -1,7 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
-      <q-toolbar>
+      <q-toolbar class="bg-dark">
         <q-btn
           flat
           dense
@@ -42,13 +42,13 @@ const essentialLinks = ref([
   {
     title: 'Reflections',
     caption: 'Reflect on experiences',
-    icon: 'visibility',
+    icon: 'psychology',
     link: '/reflections',
   },
   {
     title: 'Abstractions',
     caption: 'Abstract on reflections',
-    icon: 'psychology',
+    icon: 'emoji_objects',
     link: '/abstractions',
   },
   {

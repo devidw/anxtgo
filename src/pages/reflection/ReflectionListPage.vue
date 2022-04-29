@@ -61,7 +61,14 @@
           class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
         >
           <q-card
-            class="column fit cursor-pointer"
+            :class="{
+              column: true,
+              fit: true,
+              'cursor-pointer': true,
+              'a-positive': props.row.implementsAbstraction === true,
+              'a-negative': props.row.implementsAbstraction === false,
+              'a-neutral': props.row.implementsAbstraction === null,
+            }"
             @click="onRowClick(props.row)"
           >
             <q-card-section>
@@ -203,4 +210,11 @@ const router = useRouter()
 const onRowClick = (row) => router.push(`/reflections/${row.id}/edit`)
 </script>
 
-<style lang="sass"></style>
+<style lang="sass">
+.a-positive
+  background: linear-gradient(225deg, transparentize($green-10, .5), transparentize($green-10, .9))
+.a-negative
+  background: linear-gradient(225deg, transparentize($red-10, .65), transparentize($red-10, .9))
+.a-neutral
+  background: linear-gradient(225deg, transparentize($amber-10, .65), transparentize($amber-10, .95))
+</style>

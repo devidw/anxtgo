@@ -12,7 +12,7 @@
         <q-step
           :name="1"
           title="Reflect on the experience"
-          icon="visibility"
+          icon="psychology"
           :done="done[1]"
         >
           <q-input outlined v-model="reflection.date" class="q-mb-md">
@@ -64,7 +64,7 @@
         <q-step
           :name="2"
           title="Abstract on the reflection"
-          icon="psychology"
+          icon="emoji_objects"
           :done="done[2]"
         >
           <q-editor
