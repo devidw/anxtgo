@@ -1,0 +1,14 @@
+name: anxtgo
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - ca-certificates=2021.10.8=h033912b_0
+  - icu=70.1=h96cf925_0
+  - libcxx=13.0.1=hc203e6f_0
+  - libuv=1.43.0=h0d85af4_0
+  - libzlib=1.2.11=h6c3fc93_1014
+  - nodejs=17.9.0=h40ae9cc_0
+  - openssl=3.0.2=h6c3fc93_1
+  - zlib=1.2.11=h6c3fc93_1014
+prefix: /Users/devidw/opt/miniconda3/envs/anxtgo

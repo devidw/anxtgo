@@ -15,15 +15,38 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
+    <q-drawer
+      v-model="leftDrawerOpen"
+      show-if-above
+      bordered
+      class="column justify-between"
+    >
       <q-list>
         <q-item-label header> Navigation </q-item-label>
 
         <EssentialLink
-          v-for="link in essentialLinks"
+          v-for="link in topLinks"
           :key="link.title"
           v-bind="link"
         />
+      </q-list>
+
+      <q-list class="q-pb-xl">
+        <!-- <q-item-label header> Navigation </q-item-label> -->
+
+        <q-item
+          v-for="link in bottomLinks"
+          :key="link.title"
+          v-bind="link"
+          clickable
+          tag="a"
+          :to="link.link"
+        >
+          <q-item-section avatar></q-item-section>
+          <q-item-section>
+            <q-item-label>{{ $t(link.title) }}</q-item-label>
+          </q-item-section>
+        </q-item>
       </q-list>
     </q-drawer>
 
@@ -35,12 +58,19 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import EssentialLink from 'components/EssentialLink.vue'
 
+const { t, locale } = useI18n({ useScope: 'global' })
+const localeOptions = ref([
+  { value: 'en-US', label: 'English' },
+  { value: 'de', label: 'German' },
+])
+
 const leftDrawerOpen = ref(false)
-const essentialLinks = ref([
+const topLinks = ref([
   {
-    title: 'Reflections',
+    title: t('reflection.title', 2),
     caption: 'Reflect on experiences',
     icon: 'psychology',
     link: '/reflections',
@@ -51,11 +81,15 @@ const essentialLinks = ref([
     icon: 'emoji_objects',
     link: '/abstractions',
   },
+])
+const bottomLinks = ref([
   {
-    title: 'Export & Import',
-    caption: 'Export and import your data',
-    icon: 'sync',
+    title: 'exportImport',
     link: '/export-import',
+  },
+  {
+    title: 'preferences',
+    link: '/preferences',
   },
 ])
 const toggleLeftDrawer = () => {

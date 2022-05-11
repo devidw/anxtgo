@@ -16,7 +16,7 @@
       <template v-slot:top-left>
         <div class="q-gutter-sm">
           <q-btn
-            label="Add"
+            :label="$t('add')"
             color="primary"
             icon="add"
             outline
@@ -33,7 +33,7 @@
           dense
           debounce="300"
           v-model="filter"
-          placeholder="Search"
+          :placeholder="$t('search')"
         >
           <template v-slot:prepend>
             <q-icon name="search" />
@@ -49,8 +49,15 @@
           class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
         >
           <q-card
-            class="column fit cursor-pointer"
             @click="onRowClick(props.row)"
+            :class="{
+              column: true,
+              fit: true,
+              'cursor-pointer': true,
+              'a-bg-positive': props.row.rating > 0,
+              'a-bg-neutral': props.row.rating === 0,
+              'a-bg-negative': props.row.rating < 0,
+            }"
           >
             <q-card-section>
               <div class="text-h6">

@@ -25,7 +25,12 @@
                 >
                   <q-date v-model="reflection.date" mask="YYYY-MM-DD HH:mm:ss">
                     <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Close" color="primary" flat />
+                      <q-btn
+                        v-close-popup
+                        :label="$t('close')"
+                        color="primary"
+                        flat
+                      />
                     </div>
                   </q-date>
                 </q-popup-proxy>
@@ -46,7 +51,12 @@
                     with-seconds
                   >
                     <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Close" color="primary" flat />
+                      <q-btn
+                        v-close-popup
+                        :label="$t('close')"
+                        color="primary"
+                        flat
+                      />
                     </div>
                   </q-time>
                 </q-popup-proxy>

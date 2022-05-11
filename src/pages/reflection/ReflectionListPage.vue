@@ -3,7 +3,7 @@
     <q-table
       grid
       grid-header
-      title="Reflections"
+      :title="$t('reflection', 2)"
       :rows="rows"
       :columns="columns"
       :filter="filter"
@@ -15,13 +15,13 @@
     >
       <template v-slot:top-left>
         <q-btn
-          label="Add"
+          :label="$t('add')"
           color="primary"
           icon="add"
-          outline
-          rounded
           to="/reflections/add"
           class="q-mb-xs-md q-mb-sm-none"
+          outline
+          rounded
         />
       </template>
 
@@ -32,7 +32,7 @@
           dense
           debounce="300"
           v-model="filter.search"
-          placeholder="Search"
+          :placeholder="$t('search')"
           class="q-mr-md"
         >
           <template v-slot:prepend>
@@ -65,9 +65,9 @@
               column: true,
               fit: true,
               'cursor-pointer': true,
-              'a-positive': props.row.implementsAbstraction === true,
-              'a-negative': props.row.implementsAbstraction === false,
-              'a-neutral': props.row.implementsAbstraction === null,
+              'a-bg-positive': props.row.implementsAbstraction === true,
+              'a-bg-negative': props.row.implementsAbstraction === false,
+              'a-bg-neutral': props.row.implementsAbstraction === null,
             }"
             @click="onRowClick(props.row)"
           >
@@ -126,11 +126,13 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { date } from 'quasar'
 import { db } from 'boot/db'
 import { standardizeText } from 'boot/utils'
 
+const { t } = useI18n()
 const { formatDate } = date
 const pagination = ref({
   sortBy: 'date',
@@ -140,7 +142,7 @@ const pagination = ref({
 const rowsPerPageOptions = [5, 10, 20, 50, 100]
 const columns = [
   {
-    label: 'Date',
+    label: t('date'),
     name: 'date',
     field: (row) => row.date,
     format: (value) => value,
@@ -166,7 +168,7 @@ const columns = [
   },
 ]
 const rows = ref([])
-const options = ref(['All', 'Not yet abstracted', 'Not yet rated'])
+const options = ref([t('all'), 'Not yet abstracted', 'Not yet rated'])
 const filter = ref({
   search: '',
   showAbstracted: 'All',
@@ -210,11 +212,4 @@ const router = useRouter()
 const onRowClick = (row) => router.push(`/reflections/${row.id}/edit`)
 </script>
 
-<style lang="sass">
-.a-positive
-  background: linear-gradient(225deg, transparentize($green-10, .5), transparentize($green-10, .9))
-.a-negative
-  background: linear-gradient(225deg, transparentize($red-10, .65), transparentize($red-10, .9))
-.a-neutral
-  background: linear-gradient(225deg, transparentize($amber-10, .65), transparentize($amber-10, .95))
-</style>
+<style lang="sass"></style>

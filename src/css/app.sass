@@ -22,3 +22,14 @@
   // Only show sortable table header columns
   th:not(.sortable)
     display: none
+
+
+.a-bg
+  &-positive
+    background: linear-gradient(225deg, transparentize($green-10, .5), transparentize($green-10, .9))
+
+  &-negative
+    background: linear-gradient(225deg, transparentize($red-10, .65), transparentize($red-10, .9))
+
+  &-neutral
+    background: linear-gradient(225deg, transparentize($amber-10, .65), transparentize($amber-10, .95))

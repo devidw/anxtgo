@@ -15,6 +15,7 @@ const routes: RouteRecordRaw[] = [
       { path: 'abstractions/add', component: () => import('pages/abstraction/AbstractionAddOrEditPage.vue') },
       { path: 'abstractions/:id/edit', component: () => import('pages/abstraction/AbstractionAddOrEditPage.vue') },
       { path: 'export-import', component: () => import('src/pages/ExportImport.vue') },
+      { path: 'preferences', component: () => import('src/pages/PreferencesPage.vue') },
     ],
   },
 
