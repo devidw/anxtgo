@@ -10,6 +10,10 @@
       rounded
       outlined
     />
+
+    <!-- TODO: something to enable source code toggle in editors -->
+
+    <!-- TODO: something to show date/time entries or not -->
   </q-page>
 </template>
 

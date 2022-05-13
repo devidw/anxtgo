@@ -101,14 +101,26 @@
           icon="thumbs_up_down"
           :done="done[3]"
         >
-          <div class="q-gutter-sm">
+          <div class="q-gutter-sm text-center">
             <q-toggle
+              v-model="reflection.implementsAbstraction"
               toggle-indeterminate
               indeterminate-icon="thumbs_up_down"
               checked-icon="thumb_up"
               unchecked-icon="thumb_down"
-              v-model="reflection.implementsAbstraction"
-              label="Implements abstraction?"
+              size="lg"
+              color="green"
+            />
+            <p
+              v-html="
+                reflection.implementsAbstraction === true
+                  ? $t('Reflection implements abstraction')
+                  : reflection.implementsAbstraction === false
+                  ? $t('Reflection does not implement abstraction')
+                  : $t(
+                      'I am not sure if the reflection implements the abstraction'
+                    )
+              "
             />
           </div>
         </q-step>
@@ -120,7 +132,7 @@
                 <q-btn
                   v-if="step > 1"
                   @click="$refs.stepper.previous()"
-                  color="primary"
+                  color="grey-5"
                   icon="las la-arrow-left"
                   outline
                   rounded
@@ -129,7 +141,7 @@
                 <q-btn
                   v-if="step < 3"
                   @click="$refs.stepper.next()"
-                  color="primary"
+                  color="grey-5"
                   icon="las la-arrow-right"
                   outline
                   rounded
