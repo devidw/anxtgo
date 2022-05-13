@@ -3,11 +3,14 @@
     <q-form class="q-gutter-md" @submit.prevent.stop="onSubmit">
       <q-stepper
         v-model="step"
-        vertical
-        header-nav
-        color="primary"
-        animated
+        :vertical="$q.screen.lt.md"
         ref="stepper"
+        color="primary"
+        transition-prev="scale"
+        transition-next="scale"
+        header-nav
+        animated
+        flat
       >
         <q-step
           :name="1"
@@ -15,9 +18,9 @@
           icon="psychology"
           :done="done[1]"
         >
-          <q-input outlined v-model="reflection.date" class="q-mb-md">
+          <q-input outlined dense v-model="reflection.date" class="q-mb-md">
             <template v-slot:prepend>
-              <q-icon name="event" class="cursor-pointer">
+              <q-icon name="las la-calendar-day" class="cursor-pointer">
                 <q-popup-proxy
                   cover
                   transition-show="scale"
@@ -38,7 +41,7 @@
             </template>
 
             <template v-slot:append>
-              <q-icon name="access_time" class="cursor-pointer">
+              <q-icon name="las la-clock" class="cursor-pointer">
                 <q-popup-proxy
                   cover
                   transition-show="scale"
@@ -67,7 +70,7 @@
           <q-editor
             v-model="reflection.description"
             :toolbar="toolbar"
-            toolbar-rounded
+            :placeholder="$t('reflection.reflect')"
           />
         </q-step>
 
@@ -77,45 +80,18 @@
           icon="emoji_objects"
           :done="done[2]"
         >
+          <!-- v-if="!reflection.abstractionId" -->
           <q-editor
-            v-if="!reflection.abstractionId"
             v-model="abstraction.description"
             @keyup="filterAbstractions"
             :toolbar="toolbar"
-            toolbar-rounded
+            :placeholder="$t('reflection.abstract')"
             class="q-mb-lg"
           />
-          <q-list>
-            <q-item
-              v-for="abstraction in filteredAbstractions"
-              :key="abstraction.id"
-              v-ripple
-              tag="label"
-            >
-              <q-item-section avatar>
-                <q-radio
-                  v-model="reflection.abstractionId"
-                  :val="abstraction.id"
-                  checked-icon="task_alt"
-                />
-              </q-item-section>
-              <q-item-section>
-                <q-item-label>
-                  <q-item-label>
-                    {{ formatDateDefault(abstraction.date) }}
-                  </q-item-label>
-                  <q-item-label caption v-html="abstraction.description" />
-                </q-item-label>
-              </q-item-section>
-            </q-item>
-          </q-list>
-          <q-btn
-            v-if="reflection.abstractionId"
-            @click="unlinkAbstraction"
-            outline
-            rounded
-            color="primary"
-            label="Unlink"
+          <q-option-group
+            v-model="test"
+            :options="filteredAbstractionOptions()"
+            type="checkbox"
           />
         </q-step>
 
@@ -139,49 +115,62 @@
 
         <template v-slot:navigation>
           <q-stepper-navigation>
-            <q-btn
-              v-if="step === 3"
-              type="submit"
-              color="primary"
-              label="Save"
-              icon="save"
-              outline
-              rounded
-            />
-            <q-btn
-              v-if="step < 3"
-              outline
-              rounded
-              @click="$refs.stepper.next()"
-              color="primary"
-              label="Continue"
-              icon="arrow_forward"
-            />
-            <q-btn
-              v-if="step > 1"
-              outline
-              rounded
-              color="primary"
-              @click="$refs.stepper.previous()"
-              label="Back"
-              icon="arrow_back"
-              class="q-ml-sm"
-            />
+            <div class="row justify-between">
+              <div class="row justify-center">
+                <q-btn
+                  v-if="step > 1"
+                  @click="$refs.stepper.previous()"
+                  color="primary"
+                  icon="las la-arrow-left"
+                  outline
+                  rounded
+                  class="q-mr-sm"
+                />
+                <q-btn
+                  v-if="step < 3"
+                  @click="$refs.stepper.next()"
+                  color="primary"
+                  icon="las la-arrow-right"
+                  outline
+                  rounded
+                />
+              </div>
+              <div class="row justify-end">
+                <q-btn
+                  type="submit"
+                  color="primary"
+                  icon="las la-save"
+                  outline
+                  rounded
+                  class="q-mr-sm"
+                />
+
+                <q-btn
+                  v-if="action === 'edit'"
+                  @click="deleteReflection()"
+                  color="red"
+                  icon="las la-trash"
+                  outline
+                  rounded
+                />
+              </div>
+            </div>
           </q-stepper-navigation>
         </template>
-      </q-stepper>
 
-      <div class="row justify-end">
-        <q-btn
-          v-if="action === 'edit'"
-          @click="deleteReflection()"
-          label="Delete"
-          color="red"
-          outline
-          rounded
-          icon="delete"
-        />
-      </div>
+        <!-- <template v-slot:message>
+          <q-banner v-if="step === 1" class="q-px-lg">
+            <q-expansion-item
+              expand-separator
+              icon="las la-info"
+              label="How to reflect on the experience?"
+              caption="John Doe"
+            >
+              sdds
+            </q-expansion-item>
+          </q-banner>
+        </template> -->
+      </q-stepper>
     </q-form>
   </q-page>
 </template>
@@ -342,10 +331,28 @@ function filterAbstractions() {
 }
 
 function unlinkAbstraction() {
+  console.log(reflection.value.abstractionId)
+  if (reflection.value.abstractionId === null) {
+    return
+  }
   reflection.value.abstractionId = null
   abstraction.value.description = ''
   filteredAbstractions.value = []
 }
+
+const filteredAbstractionOptions = () => {
+  const options = filteredAbstractions.value.map((abstraction) => {
+    return {
+      value: abstraction.id,
+      label: abstraction.description,
+      checkedIcon: 'task_alt',
+      uncheckedIcon: 'highlight_off',
+    }
+  })
+  return options
+}
+
+const test = ref([1])
 </script>
 
 <style lang="sass"></style>

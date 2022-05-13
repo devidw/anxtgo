@@ -89,7 +89,7 @@
                   :name="
                     props.row.abstractionId
                       ? 'task_alt'
-                      : 'radio_button_unchecked'
+                      : 'highlight_off'
                   "
                   left
                   class="q-mr-xs"

@@ -1,7 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
-      <q-toolbar class="bg-dark">
+      <q-toolbar v-if="$q.screen.lt.md" class="bg-dark">
         <q-btn
           flat
           dense
@@ -11,18 +11,21 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title> {{ 'Anxtgo' }} </q-toolbar-title>
+        <q-toolbar-title class="text-center text-uppercase">
+          {{ 'Anxtgo' }}
+        </q-toolbar-title>
       </q-toolbar>
     </q-header>
 
     <q-drawer
       v-model="leftDrawerOpen"
       show-if-above
-      bordered
       class="column justify-between"
     >
       <q-list>
-        <q-item-label header> Navigation </q-item-label>
+        <q-item-label header class="text-uppercase">
+          {{ 'Anxtgo' }}
+        </q-item-label>
 
         <EssentialLink
           v-for="link in topLinks"
