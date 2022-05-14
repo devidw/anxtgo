@@ -15,55 +15,39 @@
     >
       <template v-slot:top-left>
         <q-btn
-          :label="$t('add')"
-          color="primary"
-          icon="add"
           to="/reflections/add"
-          class="q-mb-xs-md q-mb-sm-none"
+          icon="las la-plus"
+          color="primary"
           outline
           rounded
         />
       </template>
 
       <template v-slot:top-right v-if="rows.length > 0">
-        <q-input
-          rounded
-          outlined
-          dense
-          debounce="300"
-          v-model="filter.search"
-          :placeholder="$t('search')"
-          class="q-mr-md"
-        >
-          <template v-slot:prepend>
-            <q-icon name="search" />
-          </template>
-          <template v-slot:append>
-            <q-icon
-              name="close"
-              @click="filter.search = ''"
-              class="cursor-pointer"
-            />
-          </template>
-        </q-input>
+        <div class="fit row wrap">
+          <a-search v-model="filter.search" class="q-mr-sm-md" />
 
-        <q-select
-          v-model="filter.showAbstracted"
-          :options="options"
-          rounded
-          outlined
-          dense
-        />
+          <q-select
+            v-model="filter.showAbstracted"
+            :options="options"
+            rounded
+            outlined
+            dense
+          />
+        </div>
       </template>
 
       <template v-slot:item="props">
         <div
-          class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+          class="
+            q-pa-xs
+            col-xs-12 col-sm-6 col-md-4 col-lg-3
+            grid-style-transition
+          "
         >
           <q-card
+            class="fit column"
             :class="{
-              column: true,
-              fit: true,
               'cursor-pointer': true,
               'a-bg-positive': props.row.implementsAbstraction === true,
               'a-bg-negative': props.row.implementsAbstraction === false,
@@ -75,22 +59,18 @@
               <div class="text-h6">
                 {{ formatDate(props.row.date, 'dddd, MMMM DD, YYYY') }}
               </div>
-              <div class="text-subtitle text-grey">
+              <div class="a-heading text-grey">
                 at {{ formatDate(props.row.date, 'HH:mm:ss') }}
               </div>
             </q-card-section>
             <q-card-section class="q-pt-none">
-              <div v-html="props.row.description"></div>
+              <p>{{ props.cols[1].value }}</p>
             </q-card-section>
             <q-separator class="q-mt-auto" />
             <q-card-section class="row justify-between">
               <div>
                 <q-icon
-                  :name="
-                    props.row.abstractionId
-                      ? 'task_alt'
-                      : 'radio_button_unchecked'
-                  "
+                  :name="props.row.abstractionId ? 'task_alt' : 'highlight_off'"
                   left
                   class="q-mr-xs"
                 />
@@ -130,7 +110,8 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { date } from 'quasar'
 import { db } from 'boot/db'
-import { standardizeText } from 'boot/utils'
+import { stripHtml, standardizeText } from 'boot/utils'
+import ASearch from 'components/ASearch'
 
 const { t } = useI18n()
 const { formatDate } = date
@@ -152,7 +133,7 @@ const columns = [
     label: 'Description',
     name: 'description',
     field: (row) => row.description,
-    format: (value) => value.substring(0, 100),
+    format: (value) => stripHtml(value).substring(0, 160) + (value.length > 160 ? '…' : ''),
   },
   {
     label: 'Abstracted',

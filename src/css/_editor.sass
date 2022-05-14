@@ -1,0 +1,30 @@
+.q-editor
+  // border-left-color: transparent
+  // border-right-color: transparent
+  // border-bottom-color: transparent
+
+  // .q-editor__toolbar
+  //   .q-editor__toolbar-group
+  //     &:first-of-type
+  //       margin-left: 0
+  //       &> a
+  //         &:first-of-type
+  //           margin-left: 0
+
+.q-editor__content
+  padding-left: 0
+  padding-right: 0
+
+.q-editor__toolbars-container
+  border-width: 1px
+  border-style: solid
+  border-color: rgba(255, 255, 255, 0.28)
+  // border-radius: 4px
+
+// Fullscreen toggle shuld be at the end of the toolbar on the right side
+.q-editor__toolbar-group
+  &:last-of-type
+    margin-left: auto
+
+    &::before
+      display: none

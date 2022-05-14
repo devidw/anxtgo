@@ -1,0 +1,16 @@
+@font-face
+  font-family: anxtgo-headline
+  src: url(../assets/fonts/Inconsolata-VariableFont_wdth,wght.ttf)
+
+// .q-toolbar__title,
+.q-item__label--header,
+.a-heading
+  font-family: anxtgo-headline
+
+.q-item__label--header
+  letter-spacing: .1em
+
+// Loop over text-h1 to text-h6 and apply font family
+@for $i from 1 through 6
+  .text-h#{$i}
+    font-family: anxtgo-headline
