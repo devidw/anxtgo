@@ -18,59 +18,14 @@
           icon="psychology"
           :done="done[1]"
         >
-          <q-input outlined dense v-model="reflection.date" class="q-mb-md">
-            <template v-slot:prepend>
-              <q-icon name="las la-calendar-day" class="cursor-pointer">
-                <q-popup-proxy
-                  cover
-                  transition-show="scale"
-                  transition-hide="scale"
-                >
-                  <q-date v-model="reflection.date" mask="YYYY-MM-DD HH:mm:ss">
-                    <div class="row items-center justify-end">
-                      <q-btn
-                        v-close-popup
-                        :label="$t('close')"
-                        color="primary"
-                        flat
-                      />
-                    </div>
-                  </q-date>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-
-            <template v-slot:append>
-              <q-icon name="las la-clock" class="cursor-pointer">
-                <q-popup-proxy
-                  cover
-                  transition-show="scale"
-                  transition-hide="scale"
-                >
-                  <q-time
-                    v-model="reflection.date"
-                    mask="YYYY-MM-DD HH:mm:ss"
-                    format24h
-                    with-seconds
-                  >
-                    <div class="row items-center justify-end">
-                      <q-btn
-                        v-close-popup
-                        :label="$t('close')"
-                        color="primary"
-                        flat
-                      />
-                    </div>
-                  </q-time>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
+          <!-- <a-date-time v-model="reflection.date" class="q-mb-md" /> -->
 
           <q-editor
             v-model="reflection.description"
             :toolbar="toolbar"
             :placeholder="$t('reflection.reflect')"
+            square
+            flat
           />
         </q-step>
 
@@ -80,19 +35,40 @@
           icon="emoji_objects"
           :done="done[2]"
         >
-          <!-- v-if="!reflection.abstractionId" -->
           <q-editor
+            v-if="!reflection.abstractionId"
             v-model="abstraction.description"
             @keyup="filterAbstractions"
             :toolbar="toolbar"
             :placeholder="$t('reflection.abstract')"
             class="q-mb-lg"
+            square
+            flat
           />
-          <q-option-group
-            v-model="test"
-            :options="filteredAbstractionOptions()"
-            type="checkbox"
-          />
+          <q-list>
+            <q-item
+              v-for="abstraction in filteredAbstractions"
+              :key="abstraction.id"
+              tag="label"
+            >
+              <q-item-section avatar>
+                <q-radio
+                  v-model="reflection.abstractionId"
+                  :val="abstraction.id"
+                  checked-icon="task_alt"
+                  unchecked-icon="highlight_off"
+                />
+              </q-item-section>
+              <q-item-section @click="unlinkAbstraction(abstraction.id)">
+                <q-item-label>
+                  <q-item-label v-if="abstraction.title">
+                    {{ abstraction.title }}
+                  </q-item-label>
+                  <q-item-label caption v-html="abstraction.description" />
+                </q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
         </q-step>
 
         <q-step
@@ -159,7 +135,7 @@
 
                 <q-btn
                   v-if="action === 'edit'"
-                  @click="deleteReflection()"
+                  @click="showDeleteDialog = true"
                   color="red"
                   icon="las la-trash"
                   outline
@@ -185,14 +161,23 @@
       </q-stepper>
     </q-form>
   </q-page>
+
+  <a-dialog-delete v-model="showDeleteDialog" :callback="deleteReflection" />
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { date } from 'quasar'
 import { db } from 'boot/db'
-import { toolbar, formatDateDefault, standardizeText } from 'boot/utils'
+import {
+  toolbar,
+  formatDateDefault,
+  stripHtml,
+  standardizeText,
+} from 'boot/utils'
+import ADateTime from 'components/ADateTime'
+import ADialogDelete from 'components/ADialogDelete'
 
 const router = useRouter()
 const route = useRoute()
@@ -217,7 +202,23 @@ const done = ref({
     abstraction.value.description.length > 0,
   3: reflection.value.implementsAbstraction !== null,
 })
-const step = ref(1)
+const step = ref(2)
+const showDeleteDialog = ref(false)
+
+/**
+ * Keep only the selected abstraction in the list of shown abstractions, when the abstraction is selected
+ */
+watch(
+  () => reflection.value.abstractionId,
+  (abstractionId) => {
+    console.log('abstractionId', abstractionId)
+    if (abstractionId) {
+      readAbstraction()
+    } else {
+      filteredAbstractions.value = []
+    }
+  }
+)
 
 /**
  * What are we here for?
@@ -227,7 +228,7 @@ const step = ref(1)
     action.value = 'add'
   } else if (route.path.endsWith('edit')) {
     action.value = 'edit'
-    readReflectionAndMaybeAbstraction()
+    readReflection()
   } else {
     router.push('/reflections')
   }
@@ -239,7 +240,6 @@ const step = ref(1)
 ;(() => {
   if (route.query.abstractionId) {
     reflection.value.abstractionId = Number(route.query.abstractionId)
-    readAbstraction()
   }
 })()
 
@@ -277,17 +277,9 @@ function createReflection() {
 
 /**
  * Fill all form fields with the data of the reflection we are editing
- * And when the reflection already has an abstraction selected, we set it to the list of shown abstractions
  */
-function readReflectionAndMaybeAbstraction() {
-  db.reflections
-    .get(reflectionId)
-    .then((doc) => (reflection.value = doc))
-    .then(() => {
-      if (reflection.value.abstractionId) {
-        readAbstraction()
-      }
-    })
+function readReflection() {
+  db.reflections.get(reflectionId).then((doc) => (reflection.value = doc))
 }
 
 function readAbstraction() {
@@ -334,7 +326,9 @@ function filterAbstractions() {
   }
   db.abstractions
     .filter((abstraction) => {
-      return standardizeText(abstraction.description).includes(query)
+      return standardizeText(
+        abstraction.title + abstraction.description
+      ).includes(query)
     })
     .toArray()
     .then((abstractions) => {
@@ -342,29 +336,17 @@ function filterAbstractions() {
     })
 }
 
-function unlinkAbstraction() {
-  console.log(reflection.value.abstractionId)
-  if (reflection.value.abstractionId === null) {
+function unlinkAbstraction(abstractionId) {
+  if (
+    reflection.value.abstractionId === null ||
+    abstractionId !== reflection.value.abstractionId // Not selected radio options need to be ignored, so they can be selected
+  ) {
     return
   }
   reflection.value.abstractionId = null
   abstraction.value.description = ''
   filteredAbstractions.value = []
 }
-
-const filteredAbstractionOptions = () => {
-  const options = filteredAbstractions.value.map((abstraction) => {
-    return {
-      value: abstraction.id,
-      label: abstraction.description,
-      checkedIcon: 'task_alt',
-      uncheckedIcon: 'highlight_off',
-    }
-  })
-  return options
-}
-
-const test = ref([1])
 </script>
 
 <style lang="sass"></style>

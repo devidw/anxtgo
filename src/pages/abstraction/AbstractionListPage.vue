@@ -16,44 +16,30 @@
       <template v-slot:top-left>
         <div class="q-gutter-sm">
           <q-btn
-            :label="$t('add')"
+            to="/abstractions/add"
+            icon="las la-plus"
             color="primary"
-            icon="add"
             outline
             rounded
-            to="/abstractions/add"
           />
         </div>
       </template>
 
       <template v-slot:top-right v-if="rows.length > 0">
-        <q-input
-          rounded
-          outlined
-          dense
-          debounce="300"
-          v-model="filter"
-          :placeholder="$t('search')"
-        >
-          <template v-slot:prepend>
-            <q-icon name="search" />
-          </template>
-          <template v-slot:append>
-            <q-icon name="close" @click="filter = ''" class="cursor-pointer" />
-          </template>
-        </q-input>
+        <a-search v-model="filter" />
       </template>
 
       <template v-slot:item="props">
         <div
-          class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+          class="
+            q-pa-xs
+            col-xs-12 col-sm-6 col-md-4 col-lg-3
+            grid-style-transition
+          "
         >
           <q-card
-            @click="onRowClick(props.row)"
+            class="fit column"
             :class="{
-              column: true,
-              fit: true,
-              'cursor-pointer': true,
               'a-bg-positive': props.row.rating > 0,
               'a-bg-neutral': props.row.rating === 0,
               'a-bg-negative': props.row.rating < 0,
@@ -61,18 +47,45 @@
           >
             <q-card-section>
               <div class="text-h6">
-                {{ formatDate(props.row.date, 'dddd, MMMM DD, YYYY') }}
+                {{ props.row.title }}
               </div>
-              <div class="text-subtitle text-grey">
+              <div class="text-grey a-heading">
+                {{ formatDate(props.row.date, 'dddd, MMMM DD, YYYY') }}
                 at {{ formatDate(props.row.date, 'HH:mm:ss') }}
               </div>
             </q-card-section>
             <q-card-section class="q-pt-none">
-              <div v-html="props.row.description"></div>
+              <p>{{ props.cols[2].value }}</p>
             </q-card-section>
+
             <q-separator class="q-mt-auto" />
-            <q-card-section class="row justify-end">
-              <div class="text-bold">
+
+            <q-card-actions class="row justify-between">
+              <div>
+                <q-btn
+                  :to="`/abstractions/${props.row.id}`"
+                  icon="las la-external-link-alt"
+                  color="grey"
+                  flat
+                  rounded
+                />
+                <q-btn
+                  :to="`/abstractions/${props.row.id}/edit`"
+                  icon="las la-pen"
+                  color="grey"
+                  flat
+                  rounded
+                />
+                <q-btn
+                  :to="`/reflections/add?abstractionId=${props.row.id}`"
+                  icon="las la-plus"
+                  color="grey"
+                  flat
+                  rounded
+                />
+              </div>
+
+              <div class="text-bold text-right q-pr-md">
                 <div
                   :class="
                     props.row.rating > 0
@@ -86,7 +99,7 @@
                   <!-- <q-icon name="trending_up" /> -->
                 </div>
               </div>
-            </q-card-section>
+            </q-card-actions>
           </q-card>
         </div>
       </template>
@@ -100,7 +113,8 @@ import { useRouter } from 'vue-router'
 import { date } from 'quasar'
 import { useAbstractionRating } from './rating'
 import { db } from 'boot/db'
-import { standardizeText } from 'boot/utils'
+import { stripHtml, standardizeText } from 'boot/utils'
+import ASearch from 'components/ASearch'
 
 const { formatDate } = date
 const pagination = ref({
@@ -119,10 +133,16 @@ const columns = [
     sortable: true,
   },
   {
+    label: 'Title',
+    name: 'title',
+    field: (row) => row.title,
+    format: (value) => value,
+  },
+  {
     label: 'Description',
     name: 'description',
     field: (row) => row.description,
-    format: (value) => value,
+    format: (value) => stripHtml(value).substring(0, 160) + (value.length > 160 ? '…' : ''),
   },
   {
     label: 'Rating',
@@ -152,7 +172,6 @@ db.abstractions
   })
 
 const router = useRouter()
-const onRowClick = (row) => router.push(`/abstractions/${row.id}`)
 
 const filterBy = (rows) => {
   if (!filter.value.search) {

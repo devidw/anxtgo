@@ -99,3 +99,6 @@ const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value
 }
 </script>
+
+<style lang="sass">
+</style>

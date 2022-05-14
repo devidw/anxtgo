@@ -1,82 +1,52 @@
 <template>
   <q-page padding>
-    <q-form class="q-gutter-md" @submit="onSubmit">
-      <q-input outlined v-model="abstraction.date" class="q-mb-md">
-        <template v-slot:prepend>
-          <q-icon name="event" class="cursor-pointer">
-            <q-popup-proxy
-              cover
-              transition-show="scale"
-              transition-hide="scale"
-            >
-              <q-date v-model="abstraction.date" mask="YYYY-MM-DD HH:mm:ss">
-                <div class="row items-center justify-end">
-                  <q-btn
-                    v-close-popup
-                    :label="$t('close')"
-                    color="primary"
-                    flat
-                  />
-                </div>
-              </q-date>
-            </q-popup-proxy>
-          </q-icon>
+    <q-form class="q-gutter-md abstraction-form" @submit="onSubmit">
+      <!-- <a-date-time v-model="abstraction.date" class="q-mb-md" /> -->
+
+      <q-stepper flat v-model="step">
+        <q-step :name="1" :title="$t('abstraction.title')">
+          <q-input
+            borderless
+            v-model="abstraction.title"
+            placeholder="Your abstraction title"
+          />
+
+          <q-editor
+            v-model="abstraction.description"
+            :toolbar="toolbar"
+            :placeholder="$t('reflection.abstract')"
+            toolbar-rounded
+            square
+            flat
+          />
+        </q-step>
+
+        <template v-slot:navigation>
+          <q-stepper-navigation>
+            <div class="row justify-between">
+              <q-btn
+                type="submit"
+                icon="las la-save"
+                color="primary"
+                outline
+                rounded
+              />
+              <q-btn
+                v-if="action === 'edit'"
+                @click="showDeleteDialog = true"
+                icon="las la-trash"
+                color="red"
+                outline
+                rounded
+              />
+            </div>
+          </q-stepper-navigation>
         </template>
-
-        <template v-slot:append>
-          <q-icon name="access_time" class="cursor-pointer">
-            <q-popup-proxy
-              cover
-              transition-show="scale"
-              transition-hide="scale"
-            >
-              <q-time
-                v-model="abstraction.date"
-                mask="YYYY-MM-DD HH:mm:ss"
-                format24h
-                with-seconds
-              >
-                <div class="row items-center justify-end">
-                  <q-btn
-                    v-close-popup
-                    :label="$t('close')"
-                    color="primary"
-                    flat
-                  />
-                </div>
-              </q-time>
-            </q-popup-proxy>
-          </q-icon>
-        </template>
-      </q-input>
-
-      <q-editor
-        v-model="abstraction.description"
-        :toolbar="toolbar"
-        toolbar-rounded
-      />
-
-      <div class="row justify-between">
-        <q-btn
-          type="submit"
-          color="primary"
-          label="Save"
-          icon="save"
-          outline
-          rounded
-        />
-        <q-btn
-          v-if="action === 'edit'"
-          label="Delete"
-          @click="deleteAbstraction()"
-          color="red"
-          outline
-          rounded
-          icon="delete"
-        />
-      </div>
+      </q-stepper>
     </q-form>
   </q-page>
+
+  <a-dialog-delete v-model="showDeleteDialog" :callback="deleteAbstraction" />
 </template>
 
 <script setup>
@@ -85,6 +55,8 @@ import { useRouter, useRoute } from 'vue-router'
 import { date } from 'quasar'
 import { db } from 'boot/db'
 import { toolbar } from 'boot/utils'
+import ADateTime from 'components/ADateTime'
+import ADialogDelete from 'components/ADialogDelete'
 
 const router = useRouter()
 const route = useRoute()
@@ -92,8 +64,11 @@ const action = ref('')
 const abstractionId = Number(route.params.id)
 const abstraction = ref({
   date: date.formatDate(Date.now(), 'YYYY-MM-DD HH:mm:ss'),
+  title: '',
   description: '',
 })
+const step = ref(1)
+const showDeleteDialog = ref(false)
 
 if (route.path.endsWith('add')) {
   action.value = 'add'
@@ -139,3 +114,13 @@ function deleteAbstraction() {
   })
 }
 </script>
+
+<style lang="sass">
+.abstraction-form
+  .q-stepper__header
+    display: none
+
+  .q-field__native
+    font-size: 1.5rem
+    font-family: anxtgo-headline
+</style>

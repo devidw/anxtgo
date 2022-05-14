@@ -1,3 +1,6 @@
+@import typo
+@import editor
+
 *
   &::selection
     background: $primary
@@ -14,19 +17,15 @@
     border-color: rgba(255, 255, 255, 0.28) !important
 
 
-// Fullscreen toggle shuld be at the end of the toolbar on the right side
-.q-editor__toolbar-group
-  &:last-of-type
-    margin-left: auto
 
-    &::before
-      display: none
 
 // List view pages with grid tables
 .q-table--grid
   // Only show sortable table header columns
   th:not(.sortable)
     display: none
+
+
 
 
 .a-bg
