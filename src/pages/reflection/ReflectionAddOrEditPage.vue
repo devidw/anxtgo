@@ -202,7 +202,7 @@ const done = ref({
     abstraction.value.description.length > 0,
   3: reflection.value.implementsAbstraction !== null,
 })
-const step = ref(2)
+const step = ref(1)
 const showDeleteDialog = ref(false)
 
 /**
