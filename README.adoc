@@ -1,5 +1,7 @@
 = Anxtgo
 
+image::./public/favicon-for-dark.svg#gh-dark-mode-only[Anxtgo,width=100]
+
 Personality development in real life: Actively learn from experiences by reflecting and abstracting them into persistent knowledge. Make mistakes - but only once. Improve what's already working. It's possible through the power of experiential learning.
 
 
