@@ -17,15 +17,15 @@
     border-color: rgba(255, 255, 255, 0.28) !important
 
 
-
-
 // List view pages with grid tables
 .q-table--grid
   // Only show sortable table header columns
-  th:not(.sortable)
-    display: none
-
-
+  th
+    &:not(.sortable)
+      display: none
+      // visibility: hidden
+    // &.sortable
+      // width: 50px
 
 
 .a-bg

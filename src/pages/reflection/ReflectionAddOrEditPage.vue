@@ -51,7 +51,7 @@
               :key="abstraction.id"
               tag="label"
             >
-              <q-item-section avatar>
+              <q-item-section avatar style="justify-content: start">
                 <q-radio
                   v-model="reflection.abstractionId"
                   :val="abstraction.id"
@@ -61,7 +61,7 @@
               </q-item-section>
               <q-item-section @click="unlinkAbstraction(abstraction.id)">
                 <q-item-label>
-                  <q-item-label v-if="abstraction.title">
+                  <q-item-label v-if="abstraction.title" class="a-heading">
                     {{ abstraction.title }}
                   </q-item-label>
                   <q-item-label caption v-html="abstraction.description" />
@@ -211,7 +211,6 @@ const showDeleteDialog = ref(false)
 watch(
   () => reflection.value.abstractionId,
   (abstractionId) => {
-    console.log('abstractionId', abstractionId)
     if (abstractionId) {
       readAbstraction()
     } else {
@@ -286,7 +285,14 @@ function readAbstraction() {
   db.abstractions
     .where({ id: reflection.value.abstractionId })
     .toArray()
-    .then((docs) => (filteredAbstractions.value = docs))
+    .then((docs) => {
+      if (docs.length) {
+        filteredAbstractions.value = docs
+      } else {
+        // Fix broken links by unlinking non-existing abstractions
+        reflection.value.abstractionId = null
+      }
+    })
 }
 
 function updateReflection() {
@@ -349,4 +355,7 @@ function unlinkAbstraction(abstractionId) {
 }
 </script>
 
-<style lang="sass"></style>
+<style lang="sass">
+.q-item__label--caption br
+  display: none
+</style>

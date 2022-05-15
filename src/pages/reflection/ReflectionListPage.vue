@@ -20,6 +20,7 @@
           color="primary"
           outline
           rounded
+          dense
         />
       </template>
 

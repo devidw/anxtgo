@@ -1,11 +1,18 @@
 <template>
   <q-page padding>
-    <q-timeline :layout="layout" dark class="q-pl-lg q-pl-sm-none">
+    <q-timeline
+      :layout="layout"
+      dark
+      class="q-pl-lg q-pl-sm-none"
+      :class="{ 'a-smaller': $q.screen.gt.sm }"
+    >
       <q-timeline-entry heading>
+        {{ abstraction.title }}
+        <br v-if="abstraction.title" />
         {{ rating > 0 ? `+${rating}` : rating }}
       </q-timeline-entry>
 
-      <q-timeline-entry icon="add" class="a-add-entry">
+      <q-timeline-entry icon="las la-plus" class="a-add-entry">
         <div class="q-mb-xl" />
       </q-timeline-entry>
 
@@ -34,16 +41,22 @@
             : 'info'
         "
       >
-        <div class="q-mb-md" v-html="station.description"></div>
-        <div class="q-mb-xl">
-          <q-btn
-            outline
-            rounded
-            label="Edit"
-            @click="goToEdit(station)"
-            icon="edit_note"
-          />
+        <div class="q-mb-md">
+          <p>
+            <span v-html="station.description" />
+            <q-btn
+              flat
+              rounded
+              dense
+              size="sm"
+              icon="las la-pen"
+              color="grey"
+              class="q-ml-xs"
+              @click="goToEdit(station)"
+            />
+          </p>
         </div>
+        <div class="q-mb-xl"></div>
       </q-timeline-entry>
     </q-timeline>
   </q-page>
@@ -61,12 +74,13 @@ const router = useRouter()
 const route = useRoute()
 const $q = useQuasar()
 const id = Number(route.params.id)
+const abstraction = ref({})
 const stations = ref([])
 const layout = computed(() => {
   return $q.screen.lt.sm ? 'dense' : $q.screen.lt.md ? 'comfortable' : 'loose'
 })
 const rating = ref(0)
-useAbstractionRating(id).then((theRating) => (rating.value = theRating))
+useAbstractionRating(id).then((r) => (rating.value = r))
 
 /**
  * Get all reflection, which are linked to the current abstraction
@@ -85,6 +99,7 @@ db.reflections
     db.abstractions
       .get(id)
       .then((doc) => {
+        abstraction.value = doc
         stations.value.push(doc)
       })
       /**
@@ -127,6 +142,9 @@ onMounted(() => {
 </script>
 
 <style lang="sass">
+.a-smaller
+  width: 80%
+
 .a-add-entry .q-timeline__dot i
   cursor: pointer
 </style>

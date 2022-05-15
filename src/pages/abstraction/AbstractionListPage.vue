@@ -21,6 +21,7 @@
             color="primary"
             outline
             rounded
+            dense
           />
         </div>
       </template>
