@@ -67,14 +67,18 @@
               <p>{{ props.cols[1].value }}</p>
             </q-card-section>
             <q-separator class="q-mt-auto" />
-            <q-card-section class="row justify-between">
+            <q-card-section class="row justify-between items-center">
               <div>
                 <q-icon
-                  :name="props.row.abstractionId ? 'task_alt' : 'highlight_off'"
+                  :name="
+                    props.row.abstractionId
+                      ? 'las la-check-circle'
+                      : 'las la-times-circle'
+                  "
                   left
                   class="q-mr-xs"
                 />
-                <span
+                <small
                   v-html="
                     props.row.abstractionId ? 'Abstracted' : 'Not abstracted'
                   "
@@ -83,10 +87,10 @@
               <q-icon
                 :name="
                   props.cols[3].value === true
-                    ? 'thumb_up'
+                    ? 'o_thumb_up'
                     : props.cols[3].value === false
-                    ? 'thumb_down'
-                    : 'thumbs_up_down'
+                    ? 'o_thumb_down'
+                    : 'o_thumbs_up_down'
                 "
                 :color="
                   props.cols[3].value === true
@@ -133,7 +137,8 @@ const columns = [
     label: 'Description',
     name: 'description',
     field: (row) => row.description,
-    format: (value) => stripHtml(value).substring(0, 160) + (value.length > 160 ? '…' : ''),
+    format: (value) =>
+      stripHtml(value).substring(0, 160) + (value.length > 160 ? '…' : ''),
   },
   {
     label: 'Abstracted',

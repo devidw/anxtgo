@@ -1,30 +1,43 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
-      <q-toolbar v-if="$q.screen.lt.md" class="bg-dark">
+    <q-header class="transparent">
+      <q-toolbar v-if="$q.screen.lt.md">
         <q-btn
-          flat
           dense
-          round
-          icon="menu"
+          flat
+          rounded
+          icon="las la-caret-right"
           aria-label="Menu"
+          color="primary"
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title class="text-center text-uppercase">
+        <!-- <q-toolbar-title class="text-center text-uppercase">
           {{ 'Anxtgo' }}
-        </q-toolbar-title>
+        </q-toolbar-title> -->
       </q-toolbar>
     </q-header>
 
     <q-drawer
       v-model="leftDrawerOpen"
       show-if-above
+      :width="$q.screen.lt.md ? $q.screen.width : 300"
       class="column justify-between"
     >
       <q-list>
         <q-item-label header class="text-uppercase">
-          {{ 'Anxtgo' }}
+          <div class="row justify-between items-end">
+            <span>
+              {{ 'Anxtgo' }}
+            </span>
+            <q-btn
+              v-if="$q.screen.lt.md"
+              flat
+              rounded
+              icon="las la-caret-left"
+              @click="toggleLeftDrawer"
+            />
+          </div>
         </q-item-label>
 
         <EssentialLink

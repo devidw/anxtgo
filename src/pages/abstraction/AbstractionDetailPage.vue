@@ -18,10 +18,10 @@
         :icon="
           isReflection(station)
             ? isPos(station) === true
-              ? 'thumb_up'
+              ? 'o_thumb_up'
               : isPos(station) === false
-              ? 'thumb_down'
-              : 'thumbs_up_down'
+              ? 'o_thumb_down'
+              : 'o_thumbs_up_down'
             : 'psychology'
         "
         :color="
@@ -128,5 +128,5 @@ onMounted(() => {
 
 <style lang="sass">
 .a-add-entry .q-timeline__dot i
-    cursor: pointer
+  cursor: pointer
 </style>

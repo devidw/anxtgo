@@ -55,8 +55,8 @@
                 <q-radio
                   v-model="reflection.abstractionId"
                   :val="abstraction.id"
-                  checked-icon="task_alt"
-                  unchecked-icon="highlight_off"
+                  checked-icon="las la-check-circle"
+                  unchecked-icon="las la-times-circle"
                 />
               </q-item-section>
               <q-item-section @click="unlinkAbstraction(abstraction.id)">
@@ -74,16 +74,16 @@
         <q-step
           :name="3"
           title="Implements abstraction?"
-          icon="thumbs_up_down"
+          icon="o_thumbs_up_down"
           :done="done[3]"
         >
           <div class="q-gutter-sm text-center">
             <q-toggle
               v-model="reflection.implementsAbstraction"
               toggle-indeterminate
-              indeterminate-icon="thumbs_up_down"
-              checked-icon="thumb_up"
-              unchecked-icon="thumb_down"
+              indeterminate-icon="o_thumbs_up_down"
+              checked-icon="o_thumb_up"
+              unchecked-icon="o_thumb_down"
               size="lg"
               color="green"
             />

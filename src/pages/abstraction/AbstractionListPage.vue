@@ -64,7 +64,7 @@
               <div>
                 <q-btn
                   :to="`/abstractions/${props.row.id}`"
-                  icon="las la-external-link-alt"
+                  icon="las la-history"
                   color="grey"
                   flat
                   rounded
@@ -85,7 +85,7 @@
                 />
               </div>
 
-              <div class="text-bold text-right q-pr-md">
+              <div class="text-bold text-right q-pr-md a-heading">
                 <div
                   :class="
                     props.row.rating > 0
