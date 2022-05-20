@@ -109,6 +109,16 @@ export default defineComponent({
             family: 'Line Awesome Free',
             size: 20,
           },
+          backgroundColor: getPaletteColor('grey'),
+          displayColors: false,
+          callbacks: {
+            title: () => {
+              return ''
+            },
+            label: (context) => {
+              return `${context.parsed.r} reflections`
+            },
+          },
         },
       },
     }

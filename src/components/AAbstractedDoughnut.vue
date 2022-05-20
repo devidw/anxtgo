@@ -5,16 +5,12 @@
 <script>
 import { defineComponent, h } from 'vue'
 import { Doughnut } from 'vue-chartjs'
-import {
-  Chart as ChartJS,
-  // Legend,
-  Tooltip,
-  ArcElement,
-  CategoryScale,
-} from 'chart.js'
+import { Chart as ChartJS, Tooltip, ArcElement, CategoryScale } from 'chart.js'
 import { colors } from 'quasar'
+// import { useI18n } from 'vue-i18n'
 
 const { getPaletteColor } = colors
+// const { t } = useI18n()
 
 ChartJS.register(Tooltip, ArcElement, CategoryScale)
 
@@ -50,16 +46,13 @@ export default defineComponent({
   },
   setup(props) {
     const chartData = {
-      labels: ['Abstracted', 'Not abstracted'],
+      labels: ['abstracted reflections', 'not abstracted reflections'],
       datasets: [
         {
           data: props.data,
           // borderWidth: 1,
           // backgroundColor: [
-          borderColor: [
-            getPaletteColor('primary'),
-            getPaletteColor('grey'),
-          ],
+          borderColor: [getPaletteColor('primary'), getPaletteColor('grey')],
         },
       ],
     }
@@ -67,7 +60,17 @@ export default defineComponent({
     const chartOptions = {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: {},
+      plugins: {
+        tooltip: {
+          backgroundColor: getPaletteColor('grey'),
+          displayColors: false,
+          callbacks: {
+            label: (context) => {
+              return `${context.parsed} ${context.label}`
+            },
+          },
+        },
+      },
       layout: {
         padding: 20,
       },

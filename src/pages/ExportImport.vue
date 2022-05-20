@@ -3,11 +3,10 @@
     <div class="q-mb-xl">
       <h2 class="text-h5">Export</h2>
       <q-btn
-        label="Export"
         outline
         rounded
         color="primary"
-        icon="download"
+        icon="las la-download"
         @click="onExport"
       />
     </div>
@@ -35,11 +34,10 @@
           </template>
         </q-file>
         <q-btn
-          label="Import"
           outline
           rounded
           color="primary"
-          icon="upload"
+          icon="las la-upload"
           @click="onImport"
         />
       </div>
