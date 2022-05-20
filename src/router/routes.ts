@@ -5,8 +5,8 @@ const routes: RouteRecordRaw[] = [
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      // { path: '', component: () => import('pages/IndexPage.vue') },
-      { path: '', redirect: { path: '/reflections' } },
+      { path: '', redirect: { path: '/dashboard' } },
+      { path: 'dashboard', component: () => import('pages/DashboardPage.vue') },
       { path: 'reflections', component: () => import('pages/reflection/ReflectionListPage.vue'), },
       { path: 'reflections/add', component: () => import('pages/reflection/ReflectionAddOrEditPage.vue') },
       { path: 'reflections/:id/edit', component: () => import('pages/reflection/ReflectionAddOrEditPage.vue') },

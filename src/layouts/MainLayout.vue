@@ -32,6 +32,7 @@
             </span>
             <q-btn
               v-if="$q.screen.lt.md"
+              dense
               flat
               rounded
               icon="las la-caret-left"
@@ -85,6 +86,12 @@ const localeOptions = ref([
 
 const leftDrawerOpen = ref(false)
 const topLinks = ref([
+  {
+    title: 'Dashboard',
+    caption: '',
+    icon: 'dashboard',
+    link: '/dashboard',
+  },
   {
     title: t('reflection.title', 2),
     caption: 'Reflect on experiences',

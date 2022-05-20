@@ -143,7 +143,8 @@ const columns = [
     label: 'Description',
     name: 'description',
     field: (row) => row.description,
-    format: (value) => stripHtml(value).substring(0, 160) + (value.length > 160 ? '…' : ''),
+    format: (value) =>
+      stripHtml(value).substring(0, 160) + (value.length > 160 ? '…' : ''),
   },
   {
     label: 'Rating',
@@ -180,7 +181,7 @@ const filterBy = (rows) => {
   }
   return rows.filter((row) => {
     const search = standardizeText(filter.value)
-    const description = standardizeText(row.description)
+    const description = standardizeText(row.title + row.description)
     return description.includes(search)
   })
 }

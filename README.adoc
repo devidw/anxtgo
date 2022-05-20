@@ -55,6 +55,14 @@ Once we abstracted what we want to learn from the situation, it's a lot easier f
 * Filter your personal list of reflections to quickly see what reflections you already have turned into abstractions and which you still have to get your head around.
 * Connect new reflections to existing abstractions to build up your own network of knowledge and get a detailed history view, of when you made which reflections, that led or tries to implement your abstractions.
 * Mark your reflections as implementations of your abstraction to generate a rating for each of your abstractions. This helps you see whether you are taking an abstraction into real life with success. Also you are able to sort all of your abstractions based on your scoring, to see what you should focus on and what you are doing great already.
+* Get a statistical overview of all your entries to see the bigger picture of your experiences:
+** Amount of already abstracted reflections (reflections linked to an abstraction)
+** Amount of not yet abstracted reflections (reflections with no linked abstraction)
+** Amount of reflections that implement their abstraction (successful)
+** Amount of reflections that do not implement their abstraction (unsuccessful)
+** Amount of not yet rated reflections (reflections where implements or not implements abstraction is not set)
+// ** Get to know your average learning type, do you have more learning paths kicked off by a reflection or by an abstraction?
+// ** Your avergae number of not abstraction implemented reflections per abstraction before your first implementation.
 
 
 == Development
