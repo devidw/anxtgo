@@ -350,7 +350,7 @@ function unlinkAbstraction(abstractionId) {
     return
   }
   reflection.value.abstractionId = null
-  abstraction.value.description = ''
+  // abstraction.value.description = ''
   filteredAbstractions.value = []
 }
 </script>

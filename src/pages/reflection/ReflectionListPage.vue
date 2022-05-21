@@ -6,7 +6,7 @@
       :title="$t('reflection', 2)"
       :rows="rows"
       :columns="columns"
-      :filter="filter"
+      :filter="storeFilter.filter"
       :filter-method="filterBy"
       row-key="name"
       :binary-state-sort="true"
@@ -26,10 +26,10 @@
 
       <template v-slot:top-right v-if="rows.length > 0">
         <div class="fit row wrap">
-          <a-search v-model="filter.search" class="q-mr-sm-md" />
+          <a-search v-model="storeFilter.filter.search" class="q-mr-sm-md" />
 
           <q-select
-            v-model="filter.showAbstracted"
+            v-model="storeFilter.filter.showAbstracted"
             :options="options"
             rounded
             outlined
@@ -117,6 +117,7 @@ import { date } from 'quasar'
 import { db } from 'boot/db'
 import { stripHtml, standardizeText } from 'boot/utils'
 import ASearch from 'components/ASearch'
+import { useReflectionListFilterStore } from 'stores/reflectionListFilter'
 
 const { t } = useI18n()
 const { formatDate } = date
@@ -155,11 +156,8 @@ const columns = [
   },
 ]
 const rows = ref([])
-const options = ref([t('all'), 'Not yet abstracted', 'Not yet rated'])
-const filter = ref({
-  search: '',
-  showAbstracted: 'All',
-})
+const options = ref(['All', 'Not yet abstracted', 'Not yet rated'])
+const storeFilter = useReflectionListFilterStore()
 
 db.reflections.toArray().then((reflections) => {
   rows.value = reflections
@@ -173,14 +171,14 @@ db.reflections.toArray().then((reflections) => {
  */
 function filterBy(rows) {
   return rows.filter((row) => {
-    if (filter.value.search) {
-      const search = standardizeText(filter.value.search)
+    if (storeFilter.filter.search) {
+      const search = standardizeText(storeFilter.filter.search)
       const description = standardizeText(row.description)
       if (!description.includes(search)) {
         return false
       }
     }
-    switch (filter.value.showAbstracted) {
+    switch (storeFilter.filter.showAbstracted) {
       case 'All':
         return true
       // case 'Already abstracted':
