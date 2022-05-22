@@ -77,24 +77,3 @@ Anxtgo is build with https://vuejs.org[Vue.js], https://quasar.dev[Quasar] and h
 conda env create -n anxtgo --file environment.yml
 conda activate anxtgo
 ----
-
-[source,zsh]
-----
-conda env export > environment.yml
-----
-
-
-=== https://www.npmjs.com/[NPM]
-
-[source,zsh]
-----
-npm install
-----
-
-
-=== https://quasar.dev/[Quasar]
-
-[source,zsh]
-----
-quasar dev
-----
