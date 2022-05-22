@@ -104,44 +104,23 @@
         <template v-slot:navigation>
           <q-stepper-navigation>
             <div class="row justify-between">
-              <div class="row justify-center">
-                <q-btn
-                  v-if="step > 1"
-                  @click="$refs.stepper.previous()"
-                  color="grey-5"
-                  icon="las la-arrow-left"
-                  outline
-                  rounded
-                  class="q-mr-sm"
-                />
-                <q-btn
-                  v-if="step < 3"
-                  @click="$refs.stepper.next()"
-                  color="grey-5"
-                  icon="las la-arrow-right"
-                  outline
-                  rounded
-                />
-              </div>
-              <div class="row justify-end">
-                <q-btn
-                  type="submit"
-                  color="primary"
-                  icon="las la-save"
-                  outline
-                  rounded
-                  class="q-mr-sm"
-                />
+              <q-btn
+                type="submit"
+                color="primary"
+                icon="las la-save"
+                outline
+                rounded
+                class="q-mr-sm"
+              />
 
-                <q-btn
-                  v-if="action === 'edit'"
-                  @click="showDeleteDialog = true"
-                  color="red"
-                  icon="las la-trash"
-                  outline
-                  rounded
-                />
-              </div>
+              <q-btn
+                v-if="action === 'edit'"
+                @click="showDeleteDialog = true"
+                color="red"
+                icon="las la-trash"
+                outline
+                rounded
+              />
             </div>
           </q-stepper-navigation>
         </template>

@@ -34,7 +34,7 @@ export default defineComponent({
   //   Radar,
   // },
   props: {
-    data: {
+    datasets: {
       type: Array,
     },
     chartId: {
@@ -68,13 +68,10 @@ export default defineComponent({
         '', // 'Implements abstraction',
         '', // "Doesn't implement abstraction",
       ],
-      datasets: [
-        {
-          data: props.data,
-          backgroundColor: 'rgba(255, 255, 255, 1)',
-          borderColor: getPaletteColor('primary'),
-        },
-      ],
+      datasets: props.datasets.map((dataset) => {
+        // dataset.borderColor = getPaletteColor('primary')
+        return dataset
+      }),
     }
 
     const chartOptions = {
@@ -116,7 +113,7 @@ export default defineComponent({
               return ''
             },
             label: (context) => {
-              return `${context.parsed.r} reflections`
+              return `${context.parsed.r} ${context.dataset.label}`
             },
           },
         },

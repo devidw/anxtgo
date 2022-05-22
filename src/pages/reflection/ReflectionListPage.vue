@@ -64,7 +64,7 @@
                 at {{ formatDate(props.row.date, 'HH:mm:ss') }}
               </div>
             </q-card-section>
-            <q-card-section class="q-pt-none">
+            <q-card-section class="q-pt-none a-card__description">
               <p>{{ props.cols[1].value }}</p>
             </q-card-section>
             <q-separator class="q-mt-auto" />

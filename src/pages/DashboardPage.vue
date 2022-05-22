@@ -25,8 +25,8 @@
         </q-card-section>
         <q-card-section>
           <AImplementationRadar
-            v-if="implementationRadarData.length === 3"
-            :data="implementationRadarData"
+            v-if="implementationRadarData.length === 2"
+            :datasets="implementationRadarData"
           />
         </q-card-section>
       </q-card>
@@ -37,8 +37,12 @@
 <script setup>
 import { ref } from 'vue'
 import { db } from 'boot/db'
+import { useAbstractionRating } from './abstraction/rating'
 import AAbstractedDoughnut from 'components/AAbstractedDoughnut'
 import AImplementationRadar from 'components/AImplementationRadar'
+import { colors } from 'quasar'
+
+const { getPaletteColor } = colors
 
 const abstractedData = ref([])
 const implementationRadarData = ref([])
@@ -65,20 +69,67 @@ const implementationRadarData = ref([])
  *
  */
 ;(() => {
-  db.reflections.toArray().then((reflections) => {
-    const successful = reflections.filter((reflection) => {
-      return reflection.implementsAbstraction
-    }).length
+  /**
+   * Reflections with implementation
+   */
+  const reflectionBased = async () => {
+    const reflections = await db.reflections.toArray()
 
-    const unsuccessful = reflections.filter((reflection) => {
-      return !reflection.implementsAbstraction
-    }).length
+    let successful = 0
+    let unsuccessful = 0
+    let unknown = 0
 
-    const unknown = reflections.filter((reflection) => {
-      return reflection.implementsAbstraction === null
-    }).length
+    reflections.forEach((reflection) => {
+      if (reflection.implementsAbstraction) {
+        successful++
+      } else if (reflection.implementsAbstraction === false) {
+        unsuccessful++
+      } else if (reflection.implementsAbstraction === null) {
+        unknown++
+      }
+    })
 
-    implementationRadarData.value = [unknown, successful, unsuccessful]
+    return [unknown, successful, unsuccessful]
+  }
+
+  /**
+   *
+   */
+  const abstractionBased = async () => {
+    const abstractions = await db.abstractions.toArray()
+
+    let successful = 0
+    let unsuccessful = 0
+    let unknown = 0
+
+    for (const abstraction of abstractions) {
+      const rating = await useAbstractionRating(abstraction.id)
+
+      if (rating > 0) {
+        successful++
+      } else if (rating < 0) {
+        unsuccessful++
+      } else {
+        unknown++
+      }
+    }
+
+    return [unknown, successful, unsuccessful]
+  }
+
+  reflectionBased().then((data) => {
+    implementationRadarData.value.push({
+      data: data,
+      label: 'Reflections',
+      borderColor: getPaletteColor('primary'),
+    })
+  })
+  abstractionBased().then((data) => {
+    implementationRadarData.value.push({
+      data: data,
+      label: 'Abstractions',
+      borderColor: getPaletteColor('grey'),
+    })
   })
 })()
 </script>

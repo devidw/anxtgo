@@ -18,7 +18,7 @@ export const standardizeText = (text) => {
 }
 
 export const toolbar = [
-  ['unordered', 'ordered', 'outdent', 'indent'],
+  ['unordered', 'ordered', 'outdent', 'indent', 'link'],
   ['undo', 'redo'],
   ['fullscreen', 'viewsource'],
 ]
