@@ -88,7 +88,7 @@ const leftDrawerOpen = ref(false)
 const topLinks = ref([
   {
     title: 'Dashboard',
-    caption: '',
+    caption: 'Overview',
     icon: 'dashboard',
     link: '/dashboard',
   },
