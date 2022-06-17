@@ -8,26 +8,20 @@
         'justify-center': $q.screen.lt.md,
       }"
     >
-      <q-card>
+      <q-card v-if="abstractedData.length === 2">
         <q-card-section>
           <div class="text-h6 text-center">Abstracted</div>
         </q-card-section>
         <q-card-section>
-          <AAbstractedDoughnut
-            v-if="abstractedData.length === 2"
-            :data="abstractedData"
-          />
+          <AAbstractedDoughnut :data="abstractedData" />
         </q-card-section>
       </q-card>
-      <q-card>
+      <q-card v-if="implementationRadarData.length === 2">
         <q-card-section>
           <div class="text-h6 text-center">Abstraction implementation</div>
         </q-card-section>
         <q-card-section>
-          <AImplementationRadar
-            v-if="implementationRadarData.length === 2"
-            :datasets="implementationRadarData"
-          />
+          <AImplementationRadar :datasets="implementationRadarData" />
         </q-card-section>
       </q-card>
     </div>
@@ -50,25 +44,24 @@ const implementationRadarData = ref([])
 /**
  *
  */
-;(() => {
-  db.reflections
+;(async () => {
+  const allCount = await db.reflections.count()
+  if (allCount === 0) {
+    return
+  }
+  const abstractedCount = await db.reflections
     .where('abstractionId')
     .above(0)
     .count()
-    .then((count) => {
-      abstractedData.value[0] = count
-    })
-    .then(() => {
-      db.reflections.count().then((count) => {
-        abstractedData.value[1] = count - abstractedData.value[0]
-      })
-    })
+  const nonAbstractedCount = allCount - abstractedCount
+  abstractedData.value[0] = abstractedCount
+  abstractedData.value[1] = nonAbstractedCount
 })()
 
 /**
  *
  */
-;(() => {
+;(async () => {
   /**
    * Reflections with implementation
    */
@@ -117,19 +110,16 @@ const implementationRadarData = ref([])
     return [unknown, successful, unsuccessful]
   }
 
-  reflectionBased().then((data) => {
-    implementationRadarData.value.push({
-      data: data,
-      label: 'Reflections',
-      borderColor: getPaletteColor('primary'),
-    })
+  implementationRadarData.value.push({
+    data: await reflectionBased(),
+    label: 'Reflections',
+    borderColor: getPaletteColor('primary'),
   })
-  abstractionBased().then((data) => {
-    implementationRadarData.value.push({
-      data: data,
-      label: 'Abstractions',
-      borderColor: getPaletteColor('grey'),
-    })
+
+  implementationRadarData.value.push({
+    data: await abstractionBased(),
+    label: 'Abstractions',
+    borderColor: getPaletteColor('grey'),
   })
 })()
 </script>

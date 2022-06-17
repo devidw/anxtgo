@@ -81,39 +81,39 @@ const layout = computed(() => {
 })
 const rating = ref(0)
 useAbstractionRating(id).then((r) => (rating.value = r))
+const isReflection = (doc) => doc.abstractionId === id
+const isPos = (doc) => doc.implementsAbstraction
 
 /**
- * Get all reflection, which are linked to the current abstraction
+ *
  */
-db.reflections
-  .where({ abstractionId: id })
-  .toArray()
-  .then((docs) => {
-    const linked = docs.filter((doc) => doc.abstractionId === id)
-    stations.value = linked
-  })
+;(async () => {
+  /**
+   * Get all reflection, which are linked to the current abstraction
+   */
+  const linked = await db.reflections.where({ abstractionId: id }).toArray()
+  stations.value = linked.filter((doc) => doc.abstractionId === id)
+
   /**
    * Also add the current abstraction itself
    */
-  .then(() => {
-    db.abstractions
-      .get(id)
-      .then((doc) => {
-        abstraction.value = doc
-        stations.value.push(doc)
-      })
-      /**
-       * Sort all reflections and abstractions by date
-       */
-      .then(() => {
-        stations.value.sort((a, b) => {
-          return new Date(b.date) - new Date(a.date)
-        })
-      })
-  })
+  const curr = await db.abstractions.get(id)
+  abstraction.value = curr
+  stations.value = [...stations.value, curr]
 
-const isReflection = (doc) => doc.abstractionId === id
-const isPos = (doc) => doc.implementsAbstraction
+  /**
+   * Sort all reflections and abstractions by date
+   * If the timestamp is the same, reflections should appear before abstractions
+   */
+  stations.value.sort((a, b) => {
+    if (a.date === b.date) {
+      return isReflection(a) ? -1 : 1
+    }
+    return a.date > b.date ? 1 : -1
+  })
+  // reverse the array to show the newest first
+  stations.value.reverse()
+})()
 
 /**
  * Go to the edit page of the passed station, either a reflection or abstraction
