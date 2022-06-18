@@ -2,6 +2,20 @@
   "orientation": "portrait",
   "background_color": "#121212",
   "theme_color": "#662C91",
+  "shortcuts": [
+    {
+      "name": "New Reflection",
+      "short_name": "Reflect",
+      "description": "Create a new reflection",
+      "url": "/reflections/add"
+    },
+    {
+      "name": "New Abstraction",
+      "short_name": "Abstract",
+      "description": "Create a new abstraction",
+      "url": "/abstractions/add"
+    }
+  ],
   "icons": [
     {
       "src": "icons/icon-128x128.png",
