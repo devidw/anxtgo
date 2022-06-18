@@ -1,7 +1,7 @@
 {
   "name": "anxtgo",
-  "version": "0.0.1",
-  "description": "A Quasar Project",
+  "version": "0.1.0",
+  "description": "Personality development and knowledge gaining powered by experiential learning.",
   "productName": "Anxtgo",
   "author": "David Wolf <david@wolf.gdn>",
   "private": true,
