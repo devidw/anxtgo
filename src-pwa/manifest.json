@@ -7,13 +7,13 @@
       "name": "New Reflection",
       "short_name": "Reflect",
       "description": "Create a new reflection",
-      "url": "/reflections/add"
+      "url": "/#/reflections/add"
     },
     {
       "name": "New Abstraction",
       "short_name": "Abstract",
       "description": "Create a new abstraction",
-      "url": "/abstractions/add"
+      "url": "/#/abstractions/add"
     }
   ],
   "icons": [
