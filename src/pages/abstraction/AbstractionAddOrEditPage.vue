@@ -55,8 +55,8 @@ import { useRouter, useRoute } from 'vue-router'
 import { date } from 'quasar'
 import { db } from 'boot/db'
 import { toolbar } from 'boot/utils'
-import ADateTime from 'components/ADateTime'
-import ADialogDelete from 'components/ADialogDelete'
+import ADateTime from 'components/ADateTime.vue'
+import ADialogDelete from 'components/ADialogDelete.vue'
 
 const router = useRouter()
 const route = useRoute()

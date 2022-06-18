@@ -1,0 +1,17 @@
+{
+  "params": {
+    "include": [
+      "spa",
+      "pwa"
+    ],
+    "icon": "public/logo.png",
+    "padding": [
+      20,
+      20
+    ],
+    "themeColor": "ff69b4",
+    "svgColor": "662C91",
+    "pngColor": "121212",
+    "splashscreenColor": "121212"
+  }
+}

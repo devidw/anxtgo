@@ -32,8 +32,8 @@
 import { ref } from 'vue'
 import { db } from 'boot/db'
 import { useAbstractionRating } from './abstraction/rating'
-import AAbstractedDoughnut from 'components/AAbstractedDoughnut'
-import AImplementationRadar from 'components/AImplementationRadar'
+import AAbstractedDoughnut from 'components/AAbstractedDoughnut.vue'
+import AImplementationRadar from 'components/AImplementationRadar.vue'
 import { colors } from 'quasar'
 
 const { getPaletteColor } = colors

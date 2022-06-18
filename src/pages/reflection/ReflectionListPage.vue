@@ -116,7 +116,7 @@ import { useRouter } from 'vue-router'
 import { date } from 'quasar'
 import { db } from 'boot/db'
 import { stripHtml, standardizeText } from 'boot/utils'
-import ASearch from 'components/ASearch'
+import ASearch from 'components/ASearch.vue'
 import { useReflectionListFilterStore } from 'stores/reflectionListFilter'
 
 const { t } = useI18n()

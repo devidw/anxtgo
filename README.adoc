@@ -70,13 +70,4 @@ Once we abstracted what we want to learn from the situation, it's a lot easier f
 
 == Development
 
-Anxtgo is build with https://vuejs.org[Vue.js], https://quasar.dev[Quasar] and https://dexie.org[Dexie.js].
-
-
-=== https://www.anaconda.com/[Anaconda]
-
-[source,zsh]
-----
-conda env create -n anxtgo --file environment.yml
-conda activate anxtgo
-----
+Anxtgo is powered by https://vuejs.org[Vue.js], https://quasar.dev[Quasar] and https://dexie.org[Dexie.js].

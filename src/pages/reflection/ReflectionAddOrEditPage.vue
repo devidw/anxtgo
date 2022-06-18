@@ -155,8 +155,8 @@ import {
   stripHtml,
   standardizeText,
 } from 'boot/utils'
-import ADateTime from 'components/ADateTime'
-import ADialogDelete from 'components/ADialogDelete'
+import ADateTime from 'components/ADateTime.vue'
+import ADialogDelete from 'components/ADialogDelete.vue'
 
 const router = useRouter()
 const route = useRoute()

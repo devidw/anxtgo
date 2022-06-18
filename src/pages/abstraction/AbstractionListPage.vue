@@ -115,7 +115,7 @@ import { date } from 'quasar'
 import { useAbstractionRating } from './rating'
 import { db } from 'boot/db'
 import { stripHtml, standardizeText } from 'boot/utils'
-import ASearch from 'components/ASearch'
+import ASearch from 'components/ASearch.vue'
 
 const { formatDate } = date
 const pagination = ref({
