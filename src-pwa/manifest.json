@@ -1,7 +1,8 @@
 {
+  "short_name": "Anxtgo",
   "orientation": "portrait",
   "background_color": "#121212",
-  "theme_color": "#662C91",
+  "theme_color": "#121212",
   "shortcuts": [
     {
       "name": "New Reflection",

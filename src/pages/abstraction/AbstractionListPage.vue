@@ -10,7 +10,7 @@
       binary-state-sort
       :pagination="pagination"
       :rows-per-page-options="rowsPerPageOptions"
-      :filter="filter"
+      :filter="storeSearch.search"
       :filter-method="filterBy"
     >
       <template v-slot:top-left>
@@ -20,8 +20,7 @@
             icon="las la-plus"
             color="primary"
             outline
-            rounded
-            dense
+            round
           />
         </div>
       </template>
@@ -78,7 +77,7 @@
                   rounded
                 />
                 <q-btn
-                  :to="`/reflections/add?abstractionId=${props.row.id}`"
+                  :to="`/abstractions/add?abstractionId=${props.row.id}`"
                   icon="las la-plus"
                   color="grey"
                   flat
@@ -116,6 +115,7 @@ import { useAbstractionRating } from './rating'
 import { db } from 'boot/db'
 import { stripHtml, standardizeText } from 'boot/utils'
 import ASearch from 'components/ASearch.vue'
+import { useAbstractionListStore } from 'stores/abstractionList'
 
 const { formatDate } = date
 const pagination = ref({
@@ -155,7 +155,7 @@ const columns = [
   },
 ]
 const rows = ref([])
-const filter = ref('')
+const storeSearch = useAbstractionListStore()
 
 db.abstractions
   .toArray()
@@ -176,11 +176,11 @@ db.abstractions
 const router = useRouter()
 
 const filterBy = (rows) => {
-  if (!filter.value.search) {
+  if (!storeSearch.search) {
     return true
   }
   return rows.filter((row) => {
-    const search = standardizeText(filter.value)
+    const search = standardizeText(storeSearch.search)
     const description = standardizeText(row.title + row.description)
     return description.includes(search)
   })
