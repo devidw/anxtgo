@@ -26,16 +26,12 @@
       </template>
 
       <template v-slot:top-right v-if="rows.length > 0">
-        <a-search v-model="filter" />
+        <a-search v-model="storeSearch.search" />
       </template>
 
       <template v-slot:item="props">
         <div
-          class="
-            q-pa-xs
-            col-xs-12 col-sm-6 col-md-4 col-lg-3
-            grid-style-transition
-          "
+          class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
         >
           <q-card
             class="fit column"
@@ -124,6 +120,8 @@ const pagination = ref({
   rowsPerPage: 0, // 0 means all
 })
 const rowsPerPageOptions = [5, 10, 20, 50, 100]
+const rows = ref([])
+const storeSearch = useAbstractionListStore()
 const columns = [
   {
     label: 'Date',
@@ -154,8 +152,6 @@ const columns = [
     sortable: true,
   },
 ]
-const rows = ref([])
-const storeSearch = useAbstractionListStore()
 
 db.abstractions
   .toArray()

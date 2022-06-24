@@ -5,15 +5,7 @@ export const useAbstractionListStore = defineStore('abstractionList', {
     search: '',
   }),
 
-  getters: {
-    // doubleCount(state) {
-    //   return state.abstractionList * 2
-    // },
-  },
+  getters: {},
 
-  actions: {
-    // increment() {
-    //   this.abstractionList++
-    // },
-  },
+  actions: {},
 })

@@ -1,28 +1,56 @@
 <template>
   <q-page padding>
-    <q-table grid grid-header :title="$t('reflection', 2)" :rows="rows" :columns="columns" :filter="storeFilter.filter"
-      :filter-method="filterBy" row-key="name" :binary-state-sort="true" :pagination="pagination"
-      :rows-per-page-options="rowsPerPageOptions">
+    <q-table
+      grid
+      grid-header
+      :title="$t('reflection', 2)"
+      :rows="rows"
+      :columns="columns"
+      :filter="storeFilter.filter"
+      :filter-method="filterBy"
+      row-key="name"
+      :binary-state-sort="true"
+      :pagination="pagination"
+      :rows-per-page-options="rowsPerPageOptions"
+    >
       <template v-slot:top-left>
-        <q-btn to="/reflections/add" icon="las la-plus" color="primary" outline round />
+        <q-btn
+          to="/reflections/add"
+          icon="las la-plus"
+          color="primary"
+          outline
+          round
+        />
       </template>
 
       <template v-slot:top-right v-if="rows.length > 0">
         <div class="fit row wrap">
           <a-search v-model="storeFilter.filter.search" class="q-mr-sm" />
 
-          <q-select v-model="storeFilter.filter.showAbstracted" :options="options" rounded outlined dense />
+          <q-select
+            v-model="storeFilter.filter.showAbstracted"
+            :options="options"
+            rounded
+            outlined
+            dense
+          />
         </div>
       </template>
 
       <template v-slot:item="props">
-        <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition">
-          <q-card class="fit column" :class="{
-            'cursor-pointer': true,
-            'a-bg-positive': props.row.implementsAbstraction === true,
-            'a-bg-negative': props.row.implementsAbstraction === false,
-            'a-bg-neutral': props.row.implementsAbstraction === null,
-          }" @click="onRowClick(props.row)">
+        <div
+          class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+        >
+          <q-card
+            class="fit column"
+            :class="{
+              'cursor-pointer': true,
+              'a-bg-positive': props.row.implementsAbstraction === true,
+              'a-bg-negative': props.row.implementsAbstraction === false,
+              'a-bg-neutral': props.row.implementsAbstraction === null,
+            }"
+            @click="onRowClick(props.row)"
+          >
             <q-card-section>
               <div class="text-h6">
                 {{ formatDate(props.row.date, 'dddd, MMMM DD, YYYY') }}
@@ -37,28 +65,37 @@
             <q-separator class="q-mt-auto" />
             <q-card-section class="row justify-between items-center">
               <div>
-                <q-icon :name="
-                  props.row.abstractionId
-                    ? 'las la-check-circle'
-                    : 'las la-times-circle'
-                " left class="q-mr-xs" />
-                <small v-html="
-                  props.row.abstractionId ? 'Abstracted' : 'Not abstracted'
-                " />
+                <q-icon
+                  :name="
+                    props.row.abstractionId
+                      ? 'las la-check-circle'
+                      : 'las la-times-circle'
+                  "
+                  left
+                  class="q-mr-xs"
+                />
+                <small
+                  v-html="
+                    props.row.abstractionId ? 'Abstracted' : 'Not abstracted'
+                  "
+                />
               </div>
-              <q-icon :name="
-                props.cols[3].value === true
-                  ? 'o_thumb_up'
-                  : props.cols[3].value === false
+              <q-icon
+                :name="
+                  props.cols[3].value === true
+                    ? 'o_thumb_up'
+                    : props.cols[3].value === false
                     ? 'o_thumb_down'
                     : 'o_thumbs_up_down'
-              " :color="
-  props.cols[3].value === true
-    ? 'positive'
-    : props.cols[3].value === false
-      ? 'negative'
-      : 'orange'
-" />
+                "
+                :color="
+                  props.cols[3].value === true
+                    ? 'positive'
+                    : props.cols[3].value === false
+                    ? 'negative'
+                    : 'orange'
+                "
+              />
             </q-card-section>
           </q-card>
         </div>
@@ -84,7 +121,10 @@ const pagination = ref({
   descending: true,
   rowsPerPage: 0, // 0 means all
 })
+const options = ref(['All', 'Not yet abstracted', 'Not yet rated'])
+const storeFilter = useReflectionListStore()
 const rowsPerPageOptions = [5, 10, 20, 50, 100]
+const rows = ref([])
 const columns = [
   {
     label: t('date'),
@@ -113,9 +153,6 @@ const columns = [
     format: (value) => value,
   },
 ]
-const rows = ref([])
-const options = ref(['All', 'Not yet abstracted', 'Not yet rated'])
-const storeFilter = useReflectionListStore()
 
 db.reflections.toArray().then((reflections) => {
   rows.value = reflections
