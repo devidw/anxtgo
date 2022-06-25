@@ -95,7 +95,6 @@ import ADialogDelete from 'components/ADialogDelete.vue'
 const showEditDialog = ref(false)
 const showDeleteDialog = ref(false)
 const current = ref(null)
-const selected = ref([])
 const rows = ref([])
 const typeOptions = ref([
   {
@@ -169,8 +168,29 @@ const onDelClick = (row) => {
   showDeleteDialog.value = true
 }
 
+/**
+ * Delete the selected row.
+ * Also remove all its references in the reflections table.
+ */
 const delRow = async () => {
-  await db.consequences.delete(current.value.id)
+  db.consequences.delete(current.value.id)
+  const reflections = await db.reflections.toArray()
+  reflections.forEach((reflection) => {
+    if (
+      !reflection.hasOwnProperty('consequences') ||
+      !reflection.consequences.length ||
+      !reflection.consequences.filter(
+        (consequence) => consequence.id === current.value.id
+      ).length
+    ) {
+      return
+    }
+    db.reflections.update(reflection.id, {
+      consequences: reflection.consequences.filter(
+        (consequence) => consequence.id !== current.value.id
+      ),
+    })
+  })
   rows.value = rows.value.filter((row) => row.id !== current.value.id)
   showDeleteDialog.value = false
   current.value = null
