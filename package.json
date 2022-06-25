@@ -17,6 +17,8 @@
     "dexie-export-import": "^1.0.3",
     "downloadjs": "^1.4.7",
     "pinia": "^2.0.14",
+    "pug": "^3.0.2",
+    "pug-loader": "^2.4.0",
     "quasar": "^2.6.0",
     "rxjs": "^7.5.5",
     "vue": "^3.0.0",

@@ -1,10 +1,6 @@
 +++
 <h1 align=center>
-  <img src=./public/logo.svg width=75>
-  <!--
-  <img src=./public/favicon-for-dark.svg#gh-dark-mode-only width=75>
-  <img src=./public/favicon-for-light.svg#gh-light-mode-only width=75>
-  -->
+  <img src=./src/assets/logo.svg width=75>
   <br>
   <span>
     Anxtgo

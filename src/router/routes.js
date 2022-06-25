@@ -36,6 +36,10 @@ const routes = [
           import('pages/abstraction/AbstractionAddOrEditPage.vue'),
       },
       {
+        path: 'consequences',
+        component: () => import('src/pages/ConsequencesPage.vue'),
+      },
+      {
         path: 'export-import',
         component: () => import('src/pages/ExportImport.vue'),
       },

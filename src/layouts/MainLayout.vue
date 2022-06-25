@@ -107,6 +107,10 @@ const topLinks = ref([
 ])
 const bottomLinks = ref([
   {
+    title: 'consequences',
+    link: '/consequences',
+  },
+  {
     title: 'exportImport',
     link: '/export-import',
   },
