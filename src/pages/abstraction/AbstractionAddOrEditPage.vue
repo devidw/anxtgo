@@ -109,18 +109,15 @@ async function updateAbstraction() {
  */
 async function deleteAbstraction() {
   await db.abstractions.delete(abstractionId)
-  await db.reflections
+  const reflections = await db.reflections
     .where('abstractionId')
     .equals(abstractionId)
-    .each(async (reflection) => {
-      console.log(reflection)
-      await db.reflections.update(reflection.id, {
-        abstractionId: 10000,
-      })
-      db.reflection.toArray().then((reflections) => {
-        console.log(reflections)
-      })
+    .toArray()
+  reflections.forEach(async (reflection) => {
+    await db.reflections.update(reflection.id, {
+      abstractionId: 0,
     })
+  })
   router.push('/abstractions')
 }
 </script>
