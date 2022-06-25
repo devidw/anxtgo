@@ -35,7 +35,10 @@
           icon="bolt"
           v-model:done="done[2]"
         >
-          <a-reflection-consequences :reflection="reflection" />
+          <a-reflection-consequences
+            :reflection="reflection"
+            @consequences-changed="onConsequencesChanged"
+          />
         </q-step>
 
         <q-step
@@ -172,12 +175,7 @@ const reflection = ref({
   description: '',
   abstractionId: null,
   implementsAbstraction: null,
-  consequences: [
-    {
-      id: 1,
-      value: 2893,
-    },
-  ],
+  consequences: [],
 })
 const abstraction = ref({
   date: date.formatDate(Date.now(), 'YYYY-MM-DD HH:mm:ss'),
@@ -192,7 +190,7 @@ const done = ref({
     abstraction.value.description.length > 0,
   4: reflection.value.implementsAbstraction !== null,
 })
-const step = ref(2)
+const step = ref(1)
 const showDeleteDialog = ref(false)
 
 /**
@@ -258,8 +256,17 @@ function redirectHelper() {
   }
 }
 
+function serializeReflection() {
+  return {
+    ...reflection.value,
+    consequences: reflection.value.consequences.map((consequence) => ({
+      ...consequence,
+    })),
+  }
+}
+
 async function createReflection() {
-  await db.reflections.add(Object.assign({}, reflection.value))
+  await db.reflections.add(serializeReflection())
   redirectHelper()
 }
 
@@ -284,7 +291,7 @@ async function readAbstraction() {
 }
 
 async function updateReflection() {
-  await db.reflections.update(reflectionId, reflection.value)
+  await db.reflections.update(reflectionId, serializeReflection())
   redirectHelper()
 }
 
@@ -338,6 +345,10 @@ function unlinkAbstraction(abstractionId) {
   reflection.value.abstractionId = null
   // abstraction.value.description = ''
   filteredAbstractions.value = []
+}
+
+function onConsequencesChanged(consequences) {
+  reflection.value.consequences = consequences
 }
 </script>
 

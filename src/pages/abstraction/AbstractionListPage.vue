@@ -73,7 +73,7 @@
                   rounded
                 />
                 <q-btn
-                  :to="`/abstractions/add?abstractionId=${props.row.id}`"
+                  :to="`/reflections/add?abstractionId=${props.row.id}`"
                   icon="las la-plus"
                   color="grey"
                   flat
@@ -105,7 +105,6 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 import { date } from 'quasar'
 import { useAbstractionRating } from './rating'
 import { db } from 'boot/db'
@@ -153,25 +152,17 @@ const columns = [
   },
 ]
 
-db.abstractions
-  .toArray()
-  .then((abstractions) => {
-    rows.value = abstractions
+/**
+ * Bulk calculate, await and apply ratings to the table rows
+ */
+;(async () => {
+  rows.value = await db.abstractions.toArray()
+  rows.value.map(async (abstraction) => {
+    abstraction.rating = await useAbstractionRating(abstraction.id)
   })
-  /**
-   * Bulk calculate, await and apply ratings to the table rows
-   */
-  .then(() => {
-    rows.value.map((abstraction) => {
-      useAbstractionRating(abstraction.id).then((rating) => {
-        abstraction.rating = rating
-      })
-    })
-  })
+})()
 
-const router = useRouter()
-
-const filterBy = (rows) => {
+function filterBy(rows) {
   if (!storeSearch.search) {
     return true
   }
