@@ -56,60 +56,58 @@ import { db } from '../boot/db'
 const $q = useQuasar()
 const importFile = ref(null)
 
-const onExport = async () => {
-  db.export({ prettyJson: true })
-    .then((blob) => {
-      download(blob, 'learnings.json', 'application/json')
-    })
-    .then(() => {
-      $q.notify({
-        type: 'positive',
-        message: 'Export successful',
-      })
-    })
+async function onExport() {
+  const blob = await db.export({ prettyJson: true })
+  await download(blob, 'learnings.json', 'application/json')
+  $q.notify({
+    type: 'positive',
+    message: 'Export successful',
+  })
 }
 
 /**
- * First delete the existing database, then import the uploaded data into the database.
+ * First delete the existing database
+ * Then import the uploaded data into the database
  */
-const onImport = async () => {
+async function onImport() {
   const blob = importFile.value
+
   if (!blob) {
     return
   }
-  db.delete()
-    .then(() => {
-      $q.notify({
-        type: 'positive',
-        message: 'Deleted existing database successfully',
-      })
+
+  try {
+    await db.delete()
+  } catch (err) {
+    $q.notify({
+      type: 'negative',
+      message: 'Failed to delete existing database',
     })
-    .then(() => {
-      Dexie.import(blob)
-        .then(() => {
-          // Reopen the database connection after it was deleted and imported.
-          db.open()
-        })
-        .then(() => {
-          $q.notify({
-            type: 'positive',
-            message: 'Imported data successfully',
-          })
-        })
-        .catch((err) => {
-          $q.notify({
-            type: 'negative',
-            message: 'Failed to import data',
-          })
-          console.error(err)
-        })
+    console.error(err)
+    return
+  }
+
+  $q.notify({
+    type: 'positive',
+    message: 'Deleted existing database successfully',
+  })
+
+  try {
+    await Dexie.import(blob)
+    // Reopen the database connection after the database was deleted and imported.
+    db.open()
+  } catch (err) {
+    $q.notify({
+      type: 'negative',
+      message: 'Failed to import data',
     })
-    .catch((err) => {
-      $q.notify({
-        type: 'negative',
-        message: 'Failed to delete existing database',
-      })
-      console.error(err)
-    })
+    console.error(err)
+    return
+  }
+
+  $q.notify({
+    type: 'positive',
+    message: 'Imported data successfully',
+  })
 }
 </script>

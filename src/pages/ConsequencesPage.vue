@@ -21,10 +21,17 @@
             <q-card-section>
               <div class="text-h6">
                 {{ props.row.name }}
+                <q-badge
+                  v-if="props.row.symbol"
+                  align="middle"
+                  rounded
+                  outline
+                  color="primary"
+                  :label="props.row.symbol"
+                />
               </div>
               <div class="text-grey a-heading">
                 {{ props.row.unit }}
-                {{ props.row.symbol }}
               </div>
             </q-card-section>
 
@@ -64,6 +71,9 @@
           <q-select
             v-model="current.type"
             label="Type"
+            disable
+            emit-value
+            map-options
             :options="typeOptions"
           />
           <q-input v-model="current.unit" label="Unit" />

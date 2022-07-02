@@ -23,7 +23,7 @@
         "Vue.volar",
         "editorconfig.editorconfig",
         "asciidoctor.asciidoctor-vscode",
-        "GitHub.copilot-nightly",
+        "GitHub.copilot",
         "syler.sass-indented"
       ],
       "settings": {
