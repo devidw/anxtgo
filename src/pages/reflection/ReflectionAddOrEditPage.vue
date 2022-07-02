@@ -31,9 +31,21 @@
 
         <q-step
           :name="2"
+          title="Realize the consequences"
+          icon="bolt"
+          v-model:done="done[2]"
+        >
+          <a-reflection-consequences
+            :reflection="reflection"
+            @consequences-changed="onConsequencesChanged"
+          />
+        </q-step>
+
+        <q-step
+          :name="3"
           title="Abstract on the reflection"
           icon="emoji_objects"
-          :done="done[2]"
+          :done="done[3]"
         >
           <q-editor
             v-if="!reflection.abstractionId"
@@ -72,10 +84,10 @@
         </q-step>
 
         <q-step
-          :name="3"
+          :name="4"
           title="Implements abstraction?"
           icon="o_thumbs_up_down"
-          :done="done[3]"
+          :done="done[4]"
         >
           <div class="q-gutter-sm text-center">
             <q-toggle
@@ -149,14 +161,10 @@ import { ref, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { date } from 'quasar'
 import { db } from 'boot/db'
-import {
-  toolbar,
-  formatDateDefault,
-  stripHtml,
-  standardizeText,
-} from 'boot/utils'
+import { toolbar, standardizeText } from 'boot/utils'
 import ADateTime from 'components/ADateTime.vue'
 import ADialogDelete from 'components/ADialogDelete.vue'
+import AReflectionConsequences from 'components/AReflectionConsequences.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -167,6 +175,7 @@ const reflection = ref({
   description: '',
   abstractionId: null,
   implementsAbstraction: null,
+  consequences: [],
 })
 const abstraction = ref({
   date: date.formatDate(Date.now(), 'YYYY-MM-DD HH:mm:ss'),
@@ -174,12 +183,12 @@ const abstraction = ref({
 })
 const filteredAbstractions = ref([])
 const done = ref({
-  1:
-    reflection.value.date.length > 0 && reflection.value.description.length > 0,
-  2:
+  1: reflection.value.description.length > 0,
+  2: false,
+  3:
     reflection.value.abstractionId !== null ||
     abstraction.value.description.length > 0,
-  3: reflection.value.implementsAbstraction !== null,
+  4: reflection.value.implementsAbstraction !== null,
 })
 const step = ref(1)
 const showDeleteDialog = ref(false)
@@ -247,43 +256,48 @@ function redirectHelper() {
   }
 }
 
-function createReflection() {
-  return db.reflections.add(Object.assign({}, reflection.value)).then(() => {
-    redirectHelper()
-  })
+function serializeReflection() {
+  return {
+    ...reflection.value,
+    consequences: reflection.value.consequences.map((consequence) => ({
+      ...consequence,
+    })),
+  }
+}
+
+async function createReflection() {
+  await db.reflections.add(serializeReflection())
+  redirectHelper()
 }
 
 /**
  * Fill all form fields with the data of the reflection we are editing
  */
-function readReflection() {
-  db.reflections.get(reflectionId).then((doc) => (reflection.value = doc))
+async function readReflection() {
+  const doc = await db.reflections.get(reflectionId)
+  reflection.value = doc
 }
 
-function readAbstraction() {
-  db.abstractions
+async function readAbstraction() {
+  const docs = await db.abstractions
     .where({ id: reflection.value.abstractionId })
     .toArray()
-    .then((docs) => {
-      if (docs.length) {
-        filteredAbstractions.value = docs
-      } else {
-        // Fix broken links by unlinking non-existing abstractions
-        reflection.value.abstractionId = null
-      }
-    })
+  if (docs.length) {
+    filteredAbstractions.value = docs
+  } else {
+    // Fix broken links by unlinking non-existing abstractions
+    reflection.value.abstractionId = null
+  }
 }
 
-function updateReflection() {
-  return db.reflections.update(reflectionId, reflection.value).then(() => {
-    redirectHelper()
-  })
+async function updateReflection() {
+  await db.reflections.update(reflectionId, serializeReflection())
+  redirectHelper()
 }
 
-function deleteReflection() {
-  db.reflections.delete(reflectionId).then(() => {
-    router.push('/reflections')
-  })
+async function deleteReflection() {
+  await db.reflections.delete(reflectionId)
+  router.push('/reflections')
 }
 
 function maybeAddAbstraction() {
@@ -331,6 +345,10 @@ function unlinkAbstraction(abstractionId) {
   reflection.value.abstractionId = null
   // abstraction.value.description = ''
   filteredAbstractions.value = []
+}
+
+function onConsequencesChanged(consequences) {
+  reflection.value.consequences = consequences
 }
 </script>
 

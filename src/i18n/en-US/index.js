@@ -2,6 +2,7 @@ export default {
   language: 'Language',
   date: 'Date',
   search: 'Search',
+  consequences: 'Consequences',
   exportImport: 'Export/Import',
   preferences: 'Preferences',
   reflection: {

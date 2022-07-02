@@ -17,15 +17,15 @@
     "vscode": {
       // Add the IDs of extensions you want installed when the container is created.
       "extensions": [
-		"dbaeumer.vscode-eslint",
-		"wayou.vscode-todo-highlight",
-		"esbenp.prettier-vscode",
-		"Vue.volar",
-		"editorconfig.editorconfig",
-		"asciidoctor.asciidoctor-vscode",
-		"GitHub.copilot-nightly",
-		"syler.sass-indented"
-	],
+        "dbaeumer.vscode-eslint",
+        "wayou.vscode-todo-highlight",
+        "esbenp.prettier-vscode",
+        "Vue.volar",
+        "editorconfig.editorconfig",
+        "asciidoctor.asciidoctor-vscode",
+        "GitHub.copilot",
+        "syler.sass-indented"
+      ],
       "settings": {
         "editor.bracketPairColorization.enabled": true,
         "editor.guides.bracketPairs": true,

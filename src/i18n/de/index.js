@@ -11,4 +11,5 @@ export default {
   },
   exportImport: 'Export/Import',
   preferences: 'Einstellungen',
+  consequences: 'Konsequenzen',
 }

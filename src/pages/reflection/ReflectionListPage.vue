@@ -138,7 +138,9 @@ const columns = [
     name: 'description',
     field: (row) => row.description,
     format: (value) =>
-      stripHtml(value).substring(0, 160) + (value.length > 160 ? '…' : ''),
+      value
+        ? stripHtml(value).substring(0, 160) + (value.length > 160 ? '…' : '')
+        : '',
   },
   {
     label: 'Abstracted',

@@ -88,30 +88,37 @@ function onSubmit() {
   }
 }
 
-function createAbstraction() {
-  return db.abstractions
-    .add(Object.assign({}, abstraction.value))
-    .then((id) => {
-      router.push(`/abstractions/${id}`)
+async function createAbstraction() {
+  const id = await db.abstractions.add(Object.assign({}, abstraction.value))
+  router.push(`/abstractions/${id}`)
+}
+
+async function readAbstraction() {
+  const doc = await db.abstractions.get(abstractionId)
+  abstraction.value = doc
+}
+
+async function updateAbstraction() {
+  await db.abstractions.update(abstractionId, abstraction.value)
+  router.push(`/abstractions/${abstractionId}`)
+}
+
+/**
+ * Delete the abstraction
+ * Also unlink existing links between abstractions and reflections
+ */
+async function deleteAbstraction() {
+  await db.abstractions.delete(abstractionId)
+  const reflections = await db.reflections
+    .where('abstractionId')
+    .equals(abstractionId)
+    .toArray()
+  reflections.forEach(async (reflection) => {
+    await db.reflections.update(reflection.id, {
+      abstractionId: 0,
     })
-}
-
-function readAbstraction() {
-  return db.abstractions
-    .get(abstractionId)
-    .then((doc) => (abstraction.value = doc))
-}
-
-function updateAbstraction() {
-  return db.abstractions
-    .update(abstractionId, abstraction.value)
-    .then(() => router.push(`/abstractions/${abstractionId}`))
-}
-
-function deleteAbstraction() {
-  db.abstractions.delete(abstractionId).then(() => {
-    router.push('/abstractions')
   })
+  router.push('/abstractions')
 }
 </script>
 
